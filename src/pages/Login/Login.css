@@ -1,0 +1,4 @@
+.css-MuiDivider-root::before,
+.css-MuiDivider-root::after {
+    border-top: thin solid rgba(0, 0, 0, 0.5);
+}
