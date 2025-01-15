@@ -1,82 +1,117 @@
-import { useState } from "react";
-import Logo from "../../assets/images/+pf_logo 1.png";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
+import { useState } from "react"
 
-import FormControl from "@mui/material/FormControl";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import InputLabel from "@mui/material/InputLabel";
-import InputAdornment from "@mui/material/InputAdornment";
-import Divider from "@mui/material/Divider";
-import { MdOutlineVisibility, MdOutlineVisibilityOff, MdOutlineAccountCircle } from "react-icons/md";
-import "./Login.css";
-import Toast from "../../components/Toast/Toast";
+import Logo from "../../assets/images/+pf_logo 1.png"
+
+import Button from "@mui/material/Button"
+import Card from "@mui/material/Card"
+import CardContent from "@mui/material/CardContent"
+import Divider from "@mui/material/Divider"
+import FormControl from "@mui/material/FormControl"
+import IconButton from "@mui/material/IconButton"
+import InputAdornment from "@mui/material/InputAdornment"
+import InputLabel from "@mui/material/InputLabel"
+import OutlinedInput from "@mui/material/OutlinedInput"
+import Toast from "../../components/Toast/Toast"
+
+import {
+  MdOutlineVisibility,
+  MdOutlineVisibilityOff,
+  MdOutlineAccountCircle,
+} from "react-icons/md"
+
+import { GoogleIcon } from "../../assets/GoogleIcon"
 
 export default function Login() {
-    const [showPassword, setShowPassword] = useState(false);
-    const [showError, setShowError] = useState(true);
-    const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const [showPassword, setShowPassword] = useState(false)
+  const [showError, setShowError] = useState(false)
 
-    return (
-        <div className="bg-tint-blue1 w-full h-screen flex justify-center items-center">
-            <Card className="flex justify-center" sx={{ borderRadius: "16px", backgroundColor: "#F0F4F5" }}>
-                <CardContent className="m-7">
-                    <img src={Logo} alt="" className="max-w-60 max-h-24 m-auto mb-3" />
+  const handleClickShowPassword = () => setShowPassword((show) => !show)
+  const handleClickError = () => setShowError((show) => !show)
 
-                    <form className="flex flex-col ">
-                        <FormControl sx={{ m: 2, width: "25ch" }} variant="outlined">
-                            <InputLabel htmlFor="outlined-adornment-login" error={showError}>
-                                Login
-                            </InputLabel>
-                            <OutlinedInput
-                                error={showError}
-                                id="outlined-adornment-login"
-                                type="text"
-                                endAdornment={
-                                    <InputAdornment position="end">
-                                        <IconButton edge="end">
-                                            <MdOutlineAccountCircle />
-                                        </IconButton>
-                                    </InputAdornment>
-                                }
-                                label="Login"
-                            />
-                        </FormControl>
+  return (
+    <div className="bg-tint-blue1 w-full h-screen flex justify-center items-center">
+      <Card className="flex justify-center !bg-white !rounded-2xl">
+        <CardContent className="m-7">
+          <img src={Logo} alt="" className="max-w-60 max-h-24 m-auto mb-3" />
 
-                        <FormControl sx={{ m: 2, width: "25ch" }} variant="outlined">
-                            <InputLabel htmlFor="outlined-adornment-password" error={showError}>
-                                Password
-                            </InputLabel>
-                            <OutlinedInput
-                                error={showError}
-                                id="outlined-adornment-password"
-                                type={showPassword ? "text" : "password"}
-                                endAdornment={
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            aria-label={showPassword ? "hide the password" : "display the password"}
-                                            onClick={handleClickShowPassword}
-                                            edge="end">
-                                            {showPassword ? <MdOutlineVisibilityOff /> : <MdOutlineVisibility />}
-                                        </IconButton>
-                                    </InputAdornment>
-                                }
-                                label="Password"
-                            />
-                        </FormControl>
-                        <Button variant="contained">Login</Button>
-                    </form>
+          <form className="flex flex-col gap-4 my-5">
+            <FormControl variant="outlined">
+              <InputLabel
+                htmlFor="outlined-adornment-login"
+                error={showError}
+                required
+              >
+                Login
+              </InputLabel>
+              <OutlinedInput
+                error={showError}
+                id="outlined-adornment-login"
+                type="text"
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton edge="end">
+                      <MdOutlineAccountCircle />
+                    </IconButton>
+                  </InputAdornment>
+                }
+                label="Login*"
+              />
+            </FormControl>
 
-                    {showError ? <Toast message="Email ou senha incorretos" type="error" /> : ""}
+            <FormControl variant="outlined">
+              <InputLabel
+                htmlFor="outlined-adornment-password"
+                error={showError}
+                required
+              >
+                Password
+              </InputLabel>
+              <OutlinedInput
+                error={showError}
+                id="outlined-adornment-password"
+                type={showPassword ? "text" : "password"}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label={
+                        showPassword
+                          ? "hide the password"
+                          : "display the password"
+                      }
+                      onClick={handleClickShowPassword}
+                      edge="end"
+                    >
+                      {showPassword ? (
+                        <MdOutlineVisibilityOff />
+                      ) : (
+                        <MdOutlineVisibility />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                label="Password*"
+              />
+            </FormControl>
+            <Button
+              variant="contained"
+              className="!bg-tint-blue1 hover:!bg-tint-blue2"
+              onClick={handleClickError}
+            >
+              Login
+            </Button>
+          </form>
 
-                    <Divider>Faça login também com</Divider>
+          {showError ? (
+            <Toast message="Email ou senha incorretos" type="error" />
+          ) : (
+            ""
+          )}
 
-                    <Button></Button>
-                </CardContent>
-            </Card>
-        </div>
-    );
+          <p className="flex justify-center cursor-pointer mt-6 text-xs underline">
+            Esqueceu sua senha?
+          </p>
+        </CardContent>
+      </Card>
+    </div>
+  )
 }
