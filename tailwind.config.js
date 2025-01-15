@@ -13,7 +13,7 @@ export default {
             "tint-blue2": "#7DA0C4",
             "tint-blue3": "#C1E8FF",
             white: "#F0F4F5",
-            error: "#d32f2f"
+            error: "#D32F2F"
           }
         },
     },
