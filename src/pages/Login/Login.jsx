@@ -107,15 +107,6 @@ export default function Login() {
             ""
           )}
 
-          <div className="my-4">
-            <Divider>Faça login também com</Divider>
-          </div>
-
-          <div className="flex justify-center mt-5">
-            <Button startIcon={<GoogleIcon />} variant="outlined">
-              Entre com o Google
-            </Button>
-          </div>
           <p className="flex justify-center cursor-pointer mt-6 text-xs underline">
             Esqueceu sua senha?
           </p>
