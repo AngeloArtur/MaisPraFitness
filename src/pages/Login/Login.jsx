@@ -5,7 +5,6 @@ import Logo from "../../assets/images/+pf_logo 1.png"
 import Button from "@mui/material/Button"
 import Card from "@mui/material/Card"
 import CardContent from "@mui/material/CardContent"
-import Divider from "@mui/material/Divider"
 import FormControl from "@mui/material/FormControl"
 import IconButton from "@mui/material/IconButton"
 import InputAdornment from "@mui/material/InputAdornment"
@@ -19,7 +18,7 @@ import {
   MdOutlineAccountCircle,
 } from "react-icons/md"
 
-import { GoogleIcon } from "../../assets/GoogleIcon"
+import { Link } from "react-router-dom"
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
@@ -107,9 +106,9 @@ export default function Login() {
             ""
           )}
 
-          <p className="flex justify-center cursor-pointer mt-6 text-xs underline">
+          <Link className="flex justify-center cursor-pointer mt-6 text-xs underline" to="/forgot-password">
             Esqueceu sua senha?
-          </p>
+          </Link>
         </CardContent>
       </Card>
     </div>
