@@ -1,3 +1,5 @@
+const plugin = require('tailwindcss/plugin')
+
 /** @type {import('tailwindcss').Config} */
 export default {
     content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
@@ -13,9 +15,21 @@ export default {
             "tint-blue2": "#7DA0C4",
             "tint-blue3": "#C1E8FF",
             white: "#F0F4F5",
+            black: "#000000",
             error: "#D32F2F"
           }
         },
     },
-    plugins: [],
+    plugins: [
+      plugin(function({addBase, theme}) {
+        addBase({
+          'h1': {
+            '@apply text-xl': {}, 
+            '@screen md': {
+              fontSize: theme('fontSize.3xl'),
+            },
+          },
+        });
+      })
+    ],
 };

@@ -18,17 +18,18 @@ import {
     MdSettings,
     MdExitToApp,
 } from "react-icons/md";
+import { useTheme } from "@mui/material/styles";
 
 const NAVIGATION = [
     {
         segment: "dashboard",
         title: "Dashboard",
-        icon: <MdDashboard />,
+        icon: <MdDashboard className="text-black"/>,
     },
     {
         segment: "settings",
         title: "Settings",
-        icon: <MdSettings />,
+        icon: <MdSettings className="text-black"/>,
     },
     {
         kind: "divider",
@@ -37,12 +38,12 @@ const NAVIGATION = [
     {
         segment: "reports",
         title: "Reports",
-        icon: <MdPersonPin />,
+        icon: <MdPersonPin className="text-black"/>,
     },
     {
         segment: "reports",
         title: "Exit App",
-        icon: <MdExitToApp />,
+        icon: <MdExitToApp className="text-black"/>,
     },
 ];
 
@@ -118,8 +119,9 @@ export default function Sidebar({ open, handleDrawerOpen }) {
                         }
 
                         return (
-                            <ListItem key={item.segment} disablePadding sx={{ display: "block" }}>
+                            <ListItem key={item.segment} disablePadding >
                                 <ListItemButton
+                                className="text-black"
                                     sx={[
                                         {
                                             minHeight: 48,
