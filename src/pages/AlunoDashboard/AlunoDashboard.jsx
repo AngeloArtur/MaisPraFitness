@@ -1,21 +1,21 @@
 import React, { useState } from "react";
 import { Box, Typography, Checkbox, Button, Paper } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { useMediaQuery } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+import { useMediaQuery } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 
 const columns = [
-    { field: "id", headerName: "ID", },
-    { field: "exerciseName", headerName: "Exercício", },
+    { field: "id", headerName: "ID" },
+    { field: "exerciseName", headerName: "Exercício", width: 350 },
     { field: "series", headerName: "Séries" },
     { field: "repetitions", headerName: "Repetições" },
-    { field: "example", headerName: "Vídeo Explicativo", },
+    { field: "example", headerName: "Vídeo Explicativo", width: 350 },
 ];
 
 const AlunoDashboard = () => {
     const theme = useTheme();
-    const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-    
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
     const [treinos, setTreinos] = useState({
         A: [
             { id: 1, exerciseName: "Supino Reto", series: 3, repetitions: 15, example: "https://link.com/video1" },
@@ -54,8 +54,8 @@ const AlunoDashboard = () => {
     };
 
     return (
-        <Box className="flex"> 
-            <Box flexGrow={1}  bgcolor="#E3F2FD" className="h-dvh w-full pl-2 md:pl-6">
+        <Box className="flex">
+            <Box flexGrow={1} bgcolor="#E3F2FD" className="h-dvh w-full px-2 md:px-7">
                 <h1 className="py-2 md:py-4"> Ângelo | 22 Anos</h1>
                 <Box className="flex flex-initial gap-2 md:gap-4 mb-4">
                     {["A", "B", "C"].map((treino) => (
@@ -74,9 +74,14 @@ const AlunoDashboard = () => {
                         Treino {treinoSelecionado}
                     </Typography>
                     <Paper className="min-h-80 h-4/5 w-72 md:w-full">
-                        <DataGrid rows={treinos.A} columns={columns} checkboxSelection pageSizeOptions={false} paginationMode={false} />
+                        <DataGrid
+                            rows={treinos[treinoSelecionado]}
+                            columns={columns}
+                            checkboxSelection
+                            pageSizeOptions={false}
+                        />
                     </Paper>
-                    
+
                     <Button variant="contained" color="primary" className="!mt-4" onClick={concluirTreino}>
                         Concluir treino
                     </Button>
