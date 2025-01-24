@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import Login from "../pages/Login/Login";
 import FortgotPassword from "../pages/Forgot-Password/ForgotPassword";
-import Home from "../pages/Home/home";
+import Home from "../pages/Home/Home";
 import AlunoDashboard from "../pages/AlunoDashboard/AlunoDashboard";
 
 export default function MainRoutes() {
