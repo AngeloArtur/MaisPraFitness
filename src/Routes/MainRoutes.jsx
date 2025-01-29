@@ -1,14 +1,18 @@
-import { Route, Routes } from "react-router-dom"
-import Login from "../pages/Login/Login"
-import FortgotPassword from "../pages/Forgot-Password/ForgotPassword"
+import { Route, Routes } from "react-router-dom";
+import Login from "../pages/Login/Login";
+import FortgotPassword from "../pages/Forgot-Password/ForgotPassword";
+import Home from "../pages/Home/Home";
+import AlunoDashboard from "../pages/AlunoDashboard/AlunoDashboard";
+import Profile from "../pages/Profile/Profile";
 
 export default function MainRoutes() {
-  return (
-    <div>
-      <Routes>
-        <Route path="/login" element={Login}></Route>
-        <Route path="/forgot-password" element={FortgotPassword}></Route>
-      </Routes>
-    </div>
-  )
+    return (
+        <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/forgot-password" element={<FortgotPassword />} />
+            <Route path="/dashboard" element={<AlunoDashboard />} />
+            <Route path="/profile" element={<Profile />} />
+        </Routes>
+    );
 }
