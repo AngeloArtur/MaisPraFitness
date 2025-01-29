@@ -3,17 +3,34 @@ import { Box, Typography, Checkbox, Button, Paper } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import Toast from "../../components/Toast/Toast";
 
 const columns = [
     { field: "id", headerName: "ID" },
     { field: "exerciseName", headerName: "Exercício", width: 350 },
     { field: "series", headerName: "Séries" },
     { field: "repetitions", headerName: "Repetições" },
-    { field: "example", headerName: "Vídeo Explicativo", width: 350 },
+    {
+        field: "example",
+        headerName: "Vídeo Explicativo",
+        width: 350,
+        renderCell: (params) => (
+            <a
+                href={params.value}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "#1976d2", textDecoration: "underline" }}>
+                Ver Vídeo
+            </a>
+        ),
+    },
 ];
 
 const AlunoDashboard = () => {
     const theme = useTheme();
+    const [openToast, setOpenToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState("");
+    const [toastType, setToastType] = useState("error");
     const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
     const [treinos, setTreinos] = useState({
@@ -47,9 +64,13 @@ const AlunoDashboard = () => {
 
     const concluirTreino = () => {
         if (treinos[treinoSelecionado].every((exercicio) => exercicio.concluido)) {
-            alert("Treino concluído!");
+            setToastMessage("Treino Concluído");
+            setToastType("sucess");
+            setOpenToast(true);
         } else {
-            alert("Conclua todos os exercícios antes de finalizar o treino!");
+            setToastMessage("Por favor conclua todos os exercícios");
+            setToastType("error");
+            setOpenToast(true);
         }
     };
 
@@ -82,9 +103,17 @@ const AlunoDashboard = () => {
                         />
                     </Paper>
 
-                    <Button variant="contained" color="primary" className="!mt-4" onClick={concluirTreino}>
+                    <Button variant="contained" className="!bg-tint-blue1 hover:!bg-tint-blue2 !mt-4" onClick={concluirTreino}>
                         Concluir treino
                     </Button>
+                    {openToast && (
+                        <Toast
+                            message={toastMessage}
+                            type={toastType}
+                            open={openToast}
+                            onClose={() => setOpenToast(false)}
+                        />
+                    )}
                 </Box>
             </Box>
         </Box>
