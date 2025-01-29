@@ -3,6 +3,7 @@ import Login from "../pages/Login/Login";
 import FortgotPassword from "../pages/Forgot-Password/ForgotPassword";
 import Home from "../pages/Home/Home";
 import AlunoDashboard from "../pages/AlunoDashboard/AlunoDashboard";
+import Profile from "../pages/Profile/Profile";
 
 export default function MainRoutes() {
     return (
@@ -11,6 +12,7 @@ export default function MainRoutes() {
             <Route path="/login" element={<Login />} />
             <Route path="/forgot-password" element={<FortgotPassword />} />
             <Route path="/dashboard" element={<AlunoDashboard />} />
+            <Route path="/profile" element={<Profile />} />
         </Routes>
     );
 }
