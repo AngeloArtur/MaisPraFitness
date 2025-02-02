@@ -28,10 +28,18 @@ const columns = [
 
 const AlunoDashboard = () => {
     const theme = useTheme();
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+    const [selectedRows, setSelectedRows] = useState([]);
     const [openToast, setOpenToast] = useState(false);
     const [toastMessage, setToastMessage] = useState("");
     const [toastType, setToastType] = useState("error");
-    const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
+    const handleSelectionChange = (selectionModel) => {
+        setSelectedRows(selectionModel);
+        const selectedExercises = treinos[treinoSelecionado].filter((row) => selectionModel.includes(row.id));
+
+        console.log(selectedExercises);
+    };
 
     const [treinos, setTreinos] = useState({
         A: [
@@ -54,24 +62,21 @@ const AlunoDashboard = () => {
     });
     const [treinoSelecionado, setTreinoSelecionado] = useState("A");
 
-    const handleCheck = (index) => {
-        setTreinos((prevTreinos) => {
-            const updatedTreinos = { ...prevTreinos };
-            updatedTreinos[treinoSelecionado][index].concluido = !updatedTreinos[treinoSelecionado][index].concluido;
-            return updatedTreinos;
-        });
-    };
-
     const concluirTreino = () => {
-        if (treinos[treinoSelecionado].every((exercicio) => exercicio.concluido)) {
+        const exercise = treinos[treinoSelecionado];
+
+        // Verifica se todos os exercícios estão concluídos ou foram selecionados
+        const todosConcluidos = exercise.every(
+            (exercicio) => exercicio.concluido || selectedRows.includes(exercicio.id)
+        );
+        if (todosConcluidos) {
             setToastMessage("Treino Concluído");
-            setToastType("sucess");
-            setOpenToast(true);
+            setToastType("success");
         } else {
             setToastMessage("Por favor conclua todos os exercícios");
             setToastType("error");
-            setOpenToast(true);
         }
+        setOpenToast(true);
     };
 
     return (
@@ -100,10 +105,15 @@ const AlunoDashboard = () => {
                             columns={columns}
                             checkboxSelection
                             pageSizeOptions={false}
+                            onRowSelectionModelChange={handleSelectionChange}
+                            disableRowSelectionOnClick
                         />
                     </Paper>
 
-                    <Button variant="contained" className="!bg-tint-blue1 hover:!bg-tint-blue2 !mt-4" onClick={concluirTreino}>
+                    <Button
+                        variant="contained"
+                        className="!bg-tint-blue1 hover:!bg-tint-blue2 !mt-4"
+                        onClick={concluirTreino}>
                         Concluir treino
                     </Button>
                     {openToast && (

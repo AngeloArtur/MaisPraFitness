@@ -9,7 +9,7 @@ export default {
                 poppins: "Poppins",
             },
             colors: {
-                primary: "##021024",
+                "primary-color": "##021024",
                 secondary: "#052659",
                 "tint-blue1": "#5483B3",
                 "tint-blue2": "#7DA0C4",
