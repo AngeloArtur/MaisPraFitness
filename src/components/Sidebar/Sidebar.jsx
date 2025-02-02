@@ -17,13 +17,13 @@ const NAVIGATION = [
     {
         segment: "dashboard",
         title: "Dashboard",
-        icon: <MdDashboard className="text-black text-xl" />,
+        icon: <MdDashboard className="text-secondary text-xl" />,
         route: "/dashboard",
     },
     {
         segment: "settings",
         title: "Settings",
-        icon: <MdSettings className="text-black text-xl" />,
+        icon: <MdSettings className="text-secondary text-xl" />,
     },
     {
         kind: "divider",
@@ -32,13 +32,14 @@ const NAVIGATION = [
     {
         segment: "reports",
         title: "Reports",
-        icon: <MdPersonPin className="text-black text-xl" />,
+        icon: <MdPersonPin className="text-secondary text-xl" />,
         route: "/profile",
     },
     {
         segment: "reports",
         title: "Exit App",
-        icon: <MdExitToApp className="text-black text-xl" />,
+        icon: <MdExitToApp className="text-secondary text-xl" />,
+        route: "/login"
     },
 ];
 
@@ -106,7 +107,7 @@ export default function Sidebar({ open, handleDrawerOpen }) {
                         onClick={handleDrawerOpen}
                         edge="start"
                         sx={{ color: "black" }}>
-                        {open ? <MdMenuOpen /> : <MdOutlineMenu />}
+                        {open ? <MdMenuOpen className="text-secondary" /> : <MdOutlineMenu  className="text-secondary"/>}
                     </IconButton>
                 </DrawerHeader>
 
