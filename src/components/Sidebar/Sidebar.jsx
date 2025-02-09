@@ -26,6 +26,12 @@ const NAVIGATION = [
         icon: <MdSettings className="text-secondary text-xl" />,
     },
     {
+        segment: "lista-usuarios",
+        title: "Lista de Usuários",
+        icon: <MdPersonPin className="text-black text-xl" />,
+        route: "/lista-usuarios",
+    },
+    {
         kind: "divider",
     },
 
