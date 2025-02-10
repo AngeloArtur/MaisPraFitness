@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Box, Typography, Checkbox, Button, Paper } from "@mui/material";
+import { useState } from "react";
+import { Box, Typography, Button, Paper } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -44,7 +44,7 @@ const AlunoDashboard = () => {
     console.log(selectedExercises);
   };
 
-  const [treinos, setTreinos] = useState({
+  const [treinos] = useState({
     A: [
       {
         id: 1,
