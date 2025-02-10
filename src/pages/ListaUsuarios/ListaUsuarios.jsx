@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { Button, Card, CardContent, Typography } from "@mui/material";
-import Sidebar from "../../components/Sidebar/Sidebar";
-
 
 const ListaUsuarios = () => {
   const [usuarios, setUsuarios] = useState([
@@ -16,20 +14,33 @@ const ListaUsuarios = () => {
   };
 
   return (
-    <div style={{ display: "flex"}}>
-      <Sidebar />
+    <div style={{ display: "flex" }}>
       <div style={{ flex: 1, padding: "20px", textAlign: "center" }}>
         <Typography variant="h4" gutterBottom>
           Lista de Usuários
         </Typography>
-        <Card style={{ width: "90vw", height: "70vh", margin: "5vh auto", padding: "20px", overflowY: "auto", color: "#000000", boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)" }}>
-
+        <Card
+          style={{
+            width: "90vw",
+            height: "70vh",
+            margin: "5vh auto",
+            padding: "20px",
+            overflowY: "auto",
+            color: "#000000",
+            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+          }}
+        >
           <CardContent>
             {usuarios.length > 0 ? (
               usuarios.map((usuario, index) => (
                 <div
                   key={index}
-                  style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "10px",
+                  }}
                 >
                   <Typography>{usuario}</Typography>
                   <Button
@@ -42,7 +53,9 @@ const ListaUsuarios = () => {
                 </div>
               ))
             ) : (
-              <Typography color="textSecondary">Nenhum usuário cadastrado</Typography>
+              <Typography color="textSecondary">
+                Nenhum usuário cadastrado
+              </Typography>
             )}
           </CardContent>
         </Card>
