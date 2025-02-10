@@ -5,6 +5,7 @@ import Home from "../pages/Home/Home";
 import AlunoDashboard from "../pages/AlunoDashboard/AlunoDashboard";
 import Profile from "../pages/Profile/Profile";
 import PageError from "../pages/PageError/PageError";
+import ListaUsuarios from "../pages/ListaUsuarios/ListaUsuarios";
 import StudentList from "../pages/StudentList/StudentList";
 
 export default function MainRoutes() {
@@ -16,6 +17,7 @@ export default function MainRoutes() {
       <Route path="/forgot-password" element={<FortgotPassword />} />
       <Route path="/dashboard" element={<AlunoDashboard />} />
       <Route path="/profile" element={<Profile />} />
+      <Route path="/lista-usuarios" element={<ListaUsuarios />} />
       <Route path="/studentlist" element={<StudentList />}></Route>
     </Routes>
   );

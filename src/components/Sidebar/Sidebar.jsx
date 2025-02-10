@@ -29,6 +29,12 @@ const NAVIGATION = [
     route: "/dashboard",
   },
   {
+    segment: "lista-usuarios",
+    title: "Lista de Usuários",
+    icon: <MdPersonPin className="text-black text-xl" />,
+    route: "/lista-usuarios",
+  },
+  {
     segment: "studentlist",
     title: "Lista alunos",
     icon: <MdGroups className="text-secondary text-xl" />,
