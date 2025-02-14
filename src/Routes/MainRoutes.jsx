@@ -5,6 +5,7 @@ import Home from "../pages/Home/Home";
 import AlunoDashboard from "../pages/AlunoDashboard/AlunoDashboard";
 import Profile from "../pages/Profile/Profile";
 import PageError from "../pages/PageError/PageError";
+import RegisterForm from "../pages/Register-Form/RegisterForm";
 
 export default function MainRoutes() {
     return (
@@ -15,6 +16,7 @@ export default function MainRoutes() {
             <Route path="/forgot-password" element={<FortgotPassword />} />
             <Route path="/dashboard" element={<AlunoDashboard />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/register-form" element={<RegisterForm />} />
         </Routes>
     );
 }
