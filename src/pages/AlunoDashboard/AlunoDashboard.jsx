@@ -1,30 +1,11 @@
-import React, { useState } from "react";
-import { Box, Typography, Checkbox, Button, Paper } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Typography, Button, Paper } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Toast from "../../components/Toast/Toast";
-
-const columns = [
-    { field: "id", headerName: "ID" },
-    { field: "exerciseName", headerName: "Exercício", width: 350 },
-    { field: "series", headerName: "Séries" },
-    { field: "repetitions", headerName: "Repetições" },
-    {
-        field: "example",
-        headerName: "Vídeo Explicativo",
-        width: 350,
-        renderCell: (params) => (
-            <a
-                href={params.value}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: "#1976d2", textDecoration: "underline" }}>
-                Ver Vídeo
-            </a>
-        ),
-    },
-];
+import DialogBox from "../../components/Dialog/Dialog";
+import { fetchExercise } from "../../services/fetchExercise";
 
 const AlunoDashboard = () => {
     const theme = useTheme();
@@ -33,22 +14,99 @@ const AlunoDashboard = () => {
     const [openToast, setOpenToast] = useState(false);
     const [toastMessage, setToastMessage] = useState("");
     const [toastType, setToastType] = useState("error");
+    const [openDialog, setOpenDialog] = useState(false);
+    const [selectedExercise, setSelectedExercise] = useState({
+        example: {
+            bodyPart: "",
+            equipment: "",
+            gifUrl: "",
+            instructions: [],
+            secondaryMuscles: [],
+            target: "",
+        },
+    });
+
+    const columns = [
+        { field: "id", headerName: "ID" },
+        { field: "exerciseName", headerName: "Exercício", width: 350 },
+        { field: "series", headerName: "Séries" },
+        { field: "repetitions", headerName: "Repetições" },
+        {
+            field: "example",
+            headerName: "Vídeo Explicativo",
+            width: 350,
+            renderCell: (params) => (
+                <Button variant="text" className="color-tint-blue1" onClick={() => handleOpenDialog(params.row)}>
+                    Ver Vídeo
+                </Button>
+            ),
+        },
+    ];
+
+    const handleExerciseInformation = async (exerciseName) => {
+        try {
+            const exerciseData = await fetchExercise(exerciseName);
+
+            if (exerciseData) {
+                setSelectedExercise(exerciseData);
+            }
+        } catch (error) {
+            console.error("Erro ao buscar o exercício:", error);
+        }
+    };
+
+    const handleOpenDialog = (exercise) => {
+        handleExerciseInformation(exercise.example);
+        setOpenDialog(true);
+    };
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    };
 
     const handleSelectionChange = (selectionModel) => {
         setSelectedRows(selectionModel);
-        const selectedExercises = treinos[treinoSelecionado].filter((row) => selectionModel.includes(row.id));
-
-        console.log(selectedExercises);
+        return treinos[treinoSelecionado].filter((row) => selectionModel.includes(row.id));
     };
 
-    const [treinos, setTreinos] = useState({
+    const treinos = {
         A: [
-            { id: 1, exerciseName: "Supino Reto", series: 3, repetitions: 15, example: "https://link.com/video1" },
-            { id: 2, exerciseName: "Crucifixo", series: 3, repetitions: 15, example: "https://link.com/video1" },
-            { id: 3, exerciseName: "Supino Inclinado", series: 3, repetitions: 15, example: "https://link.com/video1" },
-            { id: 4, exerciseName: "Supino Declinado", series: 3, repetitions: 15, example: "https://link.com/video1" },
-            { id: 5, exerciseName: "Tríceps Francês", series: 3, repetitions: 15, example: "https://link.com/video1" },
-            { id: 6, exerciseName: "Tríceps Testa", series: 3, repetitions: 15, example: "https://link.com/video1" },
+            { id: 1, exerciseName: "Supino Reto", series: 3, repetitions: 15, example: "barbell bench press" },
+            {
+                id: 2,
+                exerciseName: "Crucifixo",
+                series: 3,
+                repetitions: 15,
+                example: "https://link.com/video1",
+            },
+            {
+                id: 3,
+                exerciseName: "Supino Inclinado",
+                series: 3,
+                repetitions: 15,
+                example: "barbell incline bench press",
+            },
+            {
+                id: 4,
+                exerciseName: "Supino Declinado",
+                series: 3,
+                repetitions: 15,
+                example: "https://link.com/video1",
+            },
+            {
+                id: 5,
+                exerciseName: "Tríceps Francês",
+                series: 3,
+                repetitions: 15,
+                example: "https://link.com/video1",
+            },
+            {
+                id: 6,
+                exerciseName: "Tríceps Testa",
+                series: 3,
+                repetitions: 15,
+                example: "https://link.com/video1",
+            },
             {
                 id: 7,
                 exerciseName: "Tríceps Unilateral",
@@ -59,7 +117,7 @@ const AlunoDashboard = () => {
         ],
         B: [],
         C: [],
-    });
+    };
     const [treinoSelecionado, setTreinoSelecionado] = useState("A");
 
     const concluirTreino = () => {
@@ -81,6 +139,11 @@ const AlunoDashboard = () => {
 
     return (
         <Box className="flex">
+            {openDialog && (
+                <DialogBox open={handleOpenDialog} onClose={handleCloseDialog} title="teste">
+                    <img src={selectedExercise.example.gifUrl} alt="" />
+                </DialogBox>
+            )}
             <Box flexGrow={1} bgcolor="#E3F2FD" className="h-dvh w-full px-2 md:px-7">
                 <h1 className="py-2 md:py-4"> Ângelo | 22 Anos</h1>
                 <Box className="flex flex-initial gap-2 md:gap-4 mb-4">
