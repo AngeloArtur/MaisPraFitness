@@ -10,7 +10,15 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 
-import { MdMenuOpen, MdOutlineMenu, MdPersonPin, MdDashboard, MdSettings, MdExitToApp } from "react-icons/md";
+import {
+    MdMenuOpen,
+    MdOutlineMenu,
+    MdPersonPin,
+    MdDashboard,
+    MdSettings,
+    MdExitToApp,
+    MdOutlinePersonAddAlt,
+} from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 
 const NAVIGATION = [
@@ -26,6 +34,12 @@ const NAVIGATION = [
         icon: <MdSettings className="text-secondary text-xl" />,
     },
     {
+        segment: "Create",
+        title: "Create",
+        icon: <MdOutlinePersonAddAlt className="text-secondary text-xl" />,
+        route: "/register-form"
+    },
+    {
         kind: "divider",
     },
 
@@ -39,7 +53,7 @@ const NAVIGATION = [
         segment: "reports",
         title: "Exit App",
         icon: <MdExitToApp className="text-secondary text-xl" />,
-        route: "/login"
+        route: "/login",
     },
 ];
 
@@ -107,7 +121,11 @@ export default function Sidebar({ open, handleDrawerOpen }) {
                         onClick={handleDrawerOpen}
                         edge="start"
                         sx={{ color: "black" }}>
-                        {open ? <MdMenuOpen className="text-secondary" /> : <MdOutlineMenu  className="text-secondary"/>}
+                        {open ? (
+                            <MdMenuOpen className="text-secondary" />
+                        ) : (
+                            <MdOutlineMenu className="text-secondary" />
+                        )}
                     </IconButton>
                 </DrawerHeader>
 
