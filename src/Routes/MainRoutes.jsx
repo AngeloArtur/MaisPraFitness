@@ -7,6 +7,7 @@ import Profile from "../pages/Profile/Profile";
 import PageError from "../pages/PageError/PageError";
 import ListaUsuarios from "../pages/ListaUsuarios/ListaUsuarios";
 import StudentList from "../pages/StudentList/StudentList";
+import RegisterForm from "../pages/Register-Form/RegisterForm";
 
 export default function MainRoutes() {
   return (
@@ -19,6 +20,7 @@ export default function MainRoutes() {
       <Route path="/profile" element={<Profile />} />
       <Route path="/lista-usuarios" element={<ListaUsuarios />} />
       <Route path="/studentlist" element={<StudentList />}></Route>
+      <Route path="/register-form" element={<RegisterForm />} />
     </Routes>
   );
 }

@@ -1,8 +1,10 @@
-import Snackbar from "@mui/material/Snackbar";
-import IconButton from "@mui/material/IconButton";
-import Alert from "@mui/material/Alert";
+import { Snackbar, Grow, IconButton, Alert } from "@mui/material";
 import { MdClose } from "react-icons/md";
 import { useEffect, useState } from "react";
+
+function GrowTransition(props) {
+    return <Grow {...props} />;
+  }
 
 export default function Toast({ message, type, open, onClose }) {
     const duration = 3000;
@@ -38,7 +40,13 @@ export default function Toast({ message, type, open, onClose }) {
     );
     return (
         <div>
-            <Snackbar open={open} autoHideDuration={duration} action={action} onClose={onClose}>
+            <Snackbar
+                open={open}
+                autoHideDuration={duration}
+                action={action}
+                onClose={onClose}
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                TransitionComponent={GrowTransition}>
                 <Alert
                     sx={{
                         color: "#000",
