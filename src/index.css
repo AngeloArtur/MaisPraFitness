@@ -3,6 +3,6 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-    font-family: "Poppins";
+* {
+  font-family: "Poppins";
 }
