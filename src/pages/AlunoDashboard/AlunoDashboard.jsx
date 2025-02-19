@@ -36,7 +36,11 @@ const AlunoDashboard = () => {
             headerName: "Vídeo Explicativo",
             width: 350,
             renderCell: (params) => (
-                <Button variant="text" className="color-tint-blue1" onClick={() => handleOpenDialog(params.row)}>
+                <Button
+                    type="button"
+                    variant="text"
+                    className="color-tint-blue1"
+                    onClick={() => handleOpenDialog(params.row)}>
                     Ver Vídeo
                 </Button>
             ),
@@ -120,22 +124,22 @@ const AlunoDashboard = () => {
     };
     const [treinoSelecionado, setTreinoSelecionado] = useState("A");
 
-  const concluirTreino = () => {
-    const exercise = treinos[treinoSelecionado];
+    const concluirTreino = () => {
+        const exercise = treinos[treinoSelecionado];
 
-    // Verifica se todos os exercícios estão concluídos ou foram selecionados
-    const todosConcluidos = exercise.every(
-      (exercicio) => exercicio.concluido || selectedRows.includes(exercicio.id)
-    );
-    if (todosConcluidos) {
-      setToastMessage("Treino Concluído");
-      setToastType("success");
-    } else {
-      setToastMessage("Por favor conclua todos os exercícios");
-      setToastType("error");
-    }
-    setOpenToast(true);
-  };
+        // Verifica se todos os exercícios estão concluídos ou foram selecionados
+        const todosConcluidos = exercise.every(
+            (exercicio) => exercicio.concluido || selectedRows.includes(exercicio.id)
+        );
+        if (todosConcluidos) {
+            setToastMessage("Treino Concluído");
+            setToastType("success");
+        } else {
+            setToastMessage("Por favor conclua todos os exercícios");
+            setToastType("error");
+        }
+        setOpenToast(true);
+    };
 
     return (
         <Box className="flex">
@@ -173,25 +177,24 @@ const AlunoDashboard = () => {
                         />
                     </Paper>
 
-          <Button
-            variant="contained"
-            className="!bg-tint-blue1 hover:!bg-tint-blue2 !mt-4"
-            onClick={concluirTreino}
-          >
-            Concluir treino
-          </Button>
-          {openToast && (
-            <Toast
-              message={toastMessage}
-              type={toastType}
-              open={openToast}
-              onClose={() => setOpenToast(false)}
-            />
-          )}
+                    <Button
+                        variant="contained"
+                        className="!bg-tint-blue1 hover:!bg-tint-blue2 !mt-4"
+                        onClick={concluirTreino}>
+                        Concluir treino
+                    </Button>
+                    {openToast && (
+                        <Toast
+                            message={toastMessage}
+                            type={toastType}
+                            open={openToast}
+                            onClose={() => setOpenToast(false)}
+                        />
+                    )}
+                </Box>
+            </Box>
         </Box>
-      </Box>
-    </Box>
-  );
+    );
 };
 
 export default AlunoDashboard;
