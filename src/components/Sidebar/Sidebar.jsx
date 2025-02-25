@@ -10,7 +10,17 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 
-import { MdMenuOpen, MdOutlineMenu, MdPersonPin, MdDashboard, MdSettings, MdExitToApp, MdGroups, MdOutlinePersonAddAlt,} from "react-icons/md";
+import {
+  MdMenuOpen,
+  MdOutlineMenu,
+  MdPersonPin,
+  MdDashboard,
+  MdSettings,
+  MdExitToApp,
+  MdGroups,
+  MdManageAccounts,
+  MdOutlinePersonAddAlt,
+} from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 
 const NAVIGATION = [
@@ -33,16 +43,22 @@ const NAVIGATION = [
     route: "/studentlist",
   },
   {
+    segment: "usersmanagement",
+    title: "Gestão de usuários",
+    icon: <MdManageAccounts className="text-secondary text-xl" />,
+    route: "/usersmanagement",
+  },
+  {
     segment: "settings",
     title: "Settings",
     icon: <MdSettings className="text-secondary text-xl" />,
   },
-    {
-        segment: "Create",
-        title: "Create",
-        icon: <MdOutlinePersonAddAlt className="text-secondary text-xl" />,
-        route: "/register-form"
-    },
+  {
+    segment: "Create",
+    title: "Create",
+    icon: <MdOutlinePersonAddAlt className="text-secondary text-xl" />,
+    route: "/register-form",
+  },
   {
     kind: "divider",
   },
@@ -112,26 +128,27 @@ const Drawer = styled(MuiDrawer, {
 export default function Sidebar({ open, handleDrawerOpen }) {
   const navigate = useNavigate();
 
-    const handleNavigation = (route) => {
-        navigate(route);
-    };
-    return (
-        <Box sx={{ display: "flex" }}>
-            <Drawer variant="permanent" open={open} className="!pr-5">
-                <DrawerHeader>
-                    <IconButton
-                        color="inherit"
-                        aria-label={open ? "close drawer" : "open drawer"}
-                        onClick={handleDrawerOpen}
-                        edge="start"
-                        sx={{ color: "black" }}>
-                        {open ? (
-                            <MdMenuOpen className="text-secondary" />
-                        ) : (
-                            <MdOutlineMenu className="text-secondary" />
-                        )}
-                    </IconButton>
-                </DrawerHeader>
+  const handleNavigation = (route) => {
+    navigate(route);
+  };
+  return (
+    <Box sx={{ display: "flex" }}>
+      <Drawer variant="permanent" open={open} className="!pr-5">
+        <DrawerHeader>
+          <IconButton
+            color="inherit"
+            aria-label={open ? "close drawer" : "open drawer"}
+            onClick={handleDrawerOpen}
+            edge="start"
+            sx={{ color: "black" }}
+          >
+            {open ? (
+              <MdMenuOpen className="text-secondary" />
+            ) : (
+              <MdOutlineMenu className="text-secondary" />
+            )}
+          </IconButton>
+        </DrawerHeader>
 
         <Divider />
 
