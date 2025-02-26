@@ -1,11 +1,26 @@
 import Logo from "../../assets/images/+pf_logo 1.png";
 import { useState } from "react";
-import { Box, Button, Checkbox, FormControlLabel, MenuItem, Select, Typography, InputLabel, FormControl } from "@mui/material";
+import Toast from "../../components/Toast/Toast";
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  MenuItem,
+  Select,
+  Typography,
+  TextField,
+  InputLabel,
+  FormControl,
+} from "@mui/material";
 
 export default function ExerciseForm() {
   const [checkedItems, setCheckedItems] = useState({});
   const [reps, setReps] = useState("");
   const [load, setLoad] = useState("");
+  const [exerciseNames, setExerciseNames] = useState(["", ""]);
+  const [showError, setShowError] = useState(false);
+  const [openToast, setOpenToast] = useState(false);
 
   const toggleCheckbox = (index) => {
     setCheckedItems((prev) => ({
@@ -14,38 +29,85 @@ export default function ExerciseForm() {
     }));
   };
 
+  const handleSave = () => {
+    const hasError =
+      exerciseNames.some(
+        (name, index) => checkedItems[index] && name.trim() === ""
+      ) || reps === "" || load === "";
+
+    if (hasError) {
+      setShowError(true);
+      setOpenToast(true);
+      return;
+    }
+
+    setShowError(false);
+    setOpenToast(false);
+    // Lógica para salvar os dados (exemplo: enviar para API)
+  };
+
   return (
     <Box className="flex items-center justify-center min-h-screen bg-[#7DA0C4] p-4 flex-col">
-      {/* Logo centralizada mais para cima */}
-      <Box className="mb-4 mt-[-20px]"> {/* Aqui ajustamos a margem superior */}
-        <img src={Logo} alt="Logo" className="max-w-60 max-h-24" />
+      {/* Logo mais para cima */}
+      <Box className="mb-6">
+        <img src={Logo} alt="Logo" className="max-w-56 max-h-50 mt-[-150px]" />
       </Box>
 
-      <Box className="bg-[#E3F2FD] rounded-xl p-10 shadow-lg w-full max-w-4xl">
-        <Typography variant="h4" className="font-bold text-base md:text-xl text-[#021024] text-center mb-8">
+      <Box className="bg-[#E3F2FD] rounded-xl p-20 shadow-lg w-full max-w-5xl">
+        <Typography
+          variant="h4"
+          className="font-bold text-base md:text-xl text-[#021024] text-center mb-8"
+          sx={{ fontFamily: 'Poppins, sans-serif' }} // Aplicando fonte Poppins
+        >
           Adicione seus exercícios
         </Typography>
 
-        <Box className="grid grid-cols-4 gap-4 items-center text-primary mb-4">
-          <Typography variant="subtitle1" className="font-bold text-[#021024] !text-sm md:!text-base"></Typography>
-          <Typography variant="subtitle1" className="font-bold text-[#021024] !text-sm md:!text-base"></Typography>
-          <Typography variant="subtitle1" className="font-bold text-[#021024] !text-sm md:!text-base"></Typography>
-          <Typography variant="subtitle1"></Typography>
-        </Box>
-
-        {[1, 2].map((_, index) => (
+        {[0, 1].map((index) => (
           <Box key={index} className="grid grid-cols-4 gap-4 items-center mt-4">
-            <input className="p-3 bg-[#5483B3] text-white rounded-lg w-full !text-sm md:!text-base" placeholder="Nome do exercício" />
+            {/* Nome do exercício */}
+            <TextField
+              label="Nome do exercício"
+              variant="outlined"
+              fullWidth
+              value={exerciseNames[index]}
+              onChange={(e) => {
+                const updatedNames = [...exerciseNames];
+                updatedNames[index] = e.target.value;
+                setExerciseNames(updatedNames);
+              }}
+              sx={{
+                fontFamily: 'Poppins, sans-serif', // Fonte Poppins nos inputs
+                "& .MuiInputBase-input": {
+                  color: "white", // Cor do texto dentro do input
+                },
+                "& .MuiInputLabel-root": {
+                  color: "white", // Cor da label
+                },
+                backgroundColor: "#5483B3",
+                borderRadius: "8px",
+              }}
+            />
 
             {/* Dropdown de Repetições */}
-            <FormControl className="w-full !text-sm md:!text-base">
-              <InputLabel id={`reps-label-${index}`} className="text-white">Repetições</InputLabel>
+            <FormControl fullWidth sx={{ backgroundColor: "#5483B3", borderRadius: "8px" }}>
+              <InputLabel id={`reps-label-${index}`} sx={{ color: "white", fontFamily: 'Poppins, sans-serif' }}>
+                Repetições
+              </InputLabel>
               <Select
                 labelId={`reps-label-${index}`}
                 value={reps}
                 onChange={(e) => setReps(e.target.value)}
                 label="Repetições"
-                className="bg-[#5483B3] text-white rounded-lg"
+                sx={{
+                  color: "white",
+                  fontFamily: 'Poppins, sans-serif', // Fonte Poppins no dropdown
+                  "& .MuiSelect-icon": {
+                    color: "white", // Cor do ícone
+                  },
+                  "& .MuiMenuItem-root": {
+                    color: "white", // Cor dos itens do menu
+                  },
+                }}
               >
                 <MenuItem value={5}>5</MenuItem>
                 <MenuItem value={10}>10</MenuItem>
@@ -54,16 +116,26 @@ export default function ExerciseForm() {
             </FormControl>
 
             {/* Dropdown de Carga */}
-            <FormControl className="w-full !text-sm md:!text-base">
-              <InputLabel id={`load-label-${index}`} className="text-white">Carga</InputLabel>
+            <FormControl fullWidth sx={{ backgroundColor: "#5483B3", borderRadius: "8px" }}>
+              <InputLabel id={`load-label-${index}`} sx={{ color: "white", fontFamily: 'Poppins, sans-serif' }}>
+                Carga
+              </InputLabel>
               <Select
                 labelId={`load-label-${index}`}
                 value={load}
                 onChange={(e) => setLoad(e.target.value)}
                 label="Carga"
-                className="bg-[#5483B3] text-white rounded-lg"
+                sx={{
+                  color: "white",
+                  fontFamily: 'Poppins, sans-serif', // Fonte Poppins no dropdown
+                  "& .MuiSelect-icon": {
+                    color: "white", // Cor do ícone
+                  },
+                  "& .MuiMenuItem-root": {
+                    color: "white", // Cor dos itens do menu
+                  },
+                }}
               >
-                <MenuItem value="">Carga</MenuItem>
                 <MenuItem value="5kg">5kg</MenuItem>
                 <MenuItem value="10kg">10kg</MenuItem>
                 <MenuItem value="15kg">15kg</MenuItem>
@@ -92,11 +164,32 @@ export default function ExerciseForm() {
         <Box className="flex justify-center mt-6">
           <Button
             variant="contained"
-            className="bg-[#021024] text-white py-3 px-8 rounded-xl !text-sm md:!text-base"
+            onClick={handleSave}
+            sx={{
+              backgroundColor: "#021024",
+              color: "white",
+              padding: "12px 32px",
+              borderRadius: "8px",
+              fontSize: "14px",
+              fontFamily: 'Poppins, sans-serif', // Fonte Poppins no botão
+              "&:hover": {
+                backgroundColor: "#021024",
+              },
+            }}
           >
             Salvar
           </Button>
         </Box>
+
+        {/* Toast de erro */}
+        {showError && (
+          <Toast
+            open={openToast}
+            message="Preencha todos os campos antes de salvar"
+            type="error"
+            onClose={() => setOpenToast(false)}
+          />
+        )}
       </Box>
     </Box>
   );
