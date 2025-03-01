@@ -1,6 +1,17 @@
-import { Box, FormControl, InputLabel, OutlinedInput, MenuItem, Select, Button } from "@mui/material";
+import {
+    Box,
+    FormControl,
+    InputLabel,
+    OutlinedInput,
+    MenuItem,
+    Select,
+    Button,
+    Typography,
+    Divider,
+} from "@mui/material";
 import { ApiCep } from "../../Apis/ViaCep";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import Toast from "../../components/Toast/Toast";
 
 export default function RegisterForm() {
@@ -43,16 +54,18 @@ export default function RegisterForm() {
     };
 
     return (
-        <Box className="flex flex-col items-center justify-center h-dvh w-full p-3 gap-9 md:p-8 ">
+        <Box className="flex flex-col items-center justify-center bg-secondary  h-dvh w-full p-3 gap-9 md:p-8 ">
             {openToast && (
                 <Toast message={toastMessage} type={toastType} open={openToast} onClose={() => setOpenToast(false)} />
             )}
-            <h1 className="uppercase">Cadastro</h1>
             <Box
                 component="form"
                 flexGrow={1}
-                className="flex flex-col justify-center h-dvh px-2 py-5 gap-7 bg-tint-blue3 w-full m-auto md:px-7 rounded-2xl">
-                <section>
+                className="flex flex-col justify-center h-dvh px-2 gap-7 bg-tint-blue3 max-w-[80%] md:px-7 rounded-2xl">
+                <Box>
+                    <Typography variant="h4" className="py-5">
+                        Cadastro de usuário
+                    </Typography>
                     <FormControl>
                         <InputLabel id="select-type">Tipo de usuário</InputLabel>
                         <Select
@@ -64,8 +77,9 @@ export default function RegisterForm() {
                             <MenuItem>Administrador</MenuItem>
                         </Select>
                     </FormControl>
-                </section>
-                <section className="flex flex-col gap-3 lg:flex-row ">
+                </Box>
+
+                <Box className="flex flex-col gap-3 lg:flex-row ">
                     <FormControl variant="outlined" className="w-full">
                         <InputLabel htmlFor="outlined-adornment-name">Nome</InputLabel>
                         <OutlinedInput className="bg-white-100" id="outlined-adornment-name" type="text" label="Nome" />
@@ -83,8 +97,8 @@ export default function RegisterForm() {
                         <InputLabel htmlFor="outlined-adornment-CPF">CPF</InputLabel>
                         <OutlinedInput className="bg-white-100" id="outlined-adornment-CPF" type="text" label="CPF" />
                     </FormControl>
-                </section>
-                <section className="flex flex-col gap-3 lg:flex-row ">
+                </Box>
+                <Box className="flex flex-col gap-3 lg:flex-row ">
                     <FormControl variant="outlined" className="w-full">
                         <InputLabel htmlFor="outlined-adornment-mail">Email</InputLabel>
                         <OutlinedInput
@@ -103,8 +117,11 @@ export default function RegisterForm() {
                             label="Telefone"
                         />
                     </FormControl>
-                </section>
-                <section className="flex flex-col gap-3 lg:flex-row ">
+                </Box>
+
+                <Divider></Divider>
+
+                <Box className="flex flex-col gap-3 lg:flex-row ">
                     <FormControl variant="outlined" className="w-full">
                         <InputLabel htmlFor="outlined-adornment-CEP">CEP</InputLabel>
                         <OutlinedInput
@@ -136,8 +153,8 @@ export default function RegisterForm() {
                             value={responseCep.city}
                         />
                     </FormControl>
-                </section>
-                <section className="flex flex-col gap-3 lg:flex-row ">
+                </Box>
+                <Box className="flex flex-col gap-3 lg:flex-row ">
                     <FormControl variant="outlined" className="w-full">
                         <InputLabel htmlFor="outlined-adornment-street">Rua</InputLabel>
                         <OutlinedInput
@@ -158,10 +175,13 @@ export default function RegisterForm() {
                             value={responseCep.neighborhood}
                         />
                     </FormControl>
-                </section>
-                <Button className="!bg-secondary !mt-4" variant="contained">
-                    Cadastrar
-                </Button>
+                </Box>
+
+                <Box className="flex flex-col gap-4 justify-center items-center">
+                    <Button className="!bg-secondary !mt-4 w-[30%]" variant="contained">
+                        <Link to="/measurement-registry">Avançar</Link>
+                    </Button>
+                </Box>
             </Box>
         </Box>
     );
