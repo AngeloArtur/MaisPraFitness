@@ -177,17 +177,14 @@ export default function StudentList() {
 
   return (
     <Box className="flex flex-col items-center bg-secondary justify-center h-dvh w-full p-3 gap-9 md:p-8 ">
-      <Box
-        bgcolor="#BBDEFB"
-        borderRadius={2}
-        className="p-4 w=full h-full mr-5"
-      >
+      <Box bgcolor="#BBDEFB" borderRadius={2} className="p-4 h-full mr-5">
         <Typography variant="h5" className="pt-4">
           Lista de alunos
         </Typography>
         <Box className="my-4">
           <ThemeProvider theme={customTheme(outerTheme)}>
             <TextField
+              className="bg-white-100"
               value={pesquisarAluno}
               onChange={(e) => setPesquisarAluno(e.target.value)}
               label="Pesquisar aluno"

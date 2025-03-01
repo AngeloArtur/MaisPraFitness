@@ -197,6 +197,7 @@ export default function StudentList() {
         <Box className="my-4">
           <ThemeProvider theme={customTheme(outerTheme)}>
             <TextField
+              className="bg-white-100"
               value={pesquisarAluno}
               onChange={(e) => setPesquisarAluno(e.target.value)}
               label="Pesquisar aluno"

@@ -9,7 +9,7 @@ import ListaUsuarios from "../pages/ListaUsuarios/ListaUsuarios";
 import StudentList from "../pages/StudentList/StudentList";
 import RegisterForm from "../pages/Register-Form/RegisterForm";
 import UsersManagement from "../pages/UsersManagement/UsersManagement";
-
+import MeasurementRegistry from "../pages/MeasurementRegistry/MeasurementRegistry";
 export default function MainRoutes() {
   return (
     <Routes>
@@ -23,6 +23,7 @@ export default function MainRoutes() {
       <Route path="/studentlist" element={<StudentList />}></Route>
       <Route path="/register-form" element={<RegisterForm />} />
       <Route path="/usersmanagement" element={<UsersManagement />} />
+      <Route path="/measurement-registry" element={<MeasurementRegistry />} />
     </Routes>
   );
 }
