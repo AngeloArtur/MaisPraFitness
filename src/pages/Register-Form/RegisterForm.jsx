@@ -68,7 +68,7 @@ export default function RegisterForm() {
       <Box
         component="form"
         flexGrow={1}
-        className="flex flex-col justify-center max-h-[80%] px-2 gap-7 bg-tint-blue3 w-[80%] md:px-7 rounded-2xl"
+        className="flex flex-col justify-center h-dvh px-2 gap-7 bg-tint-blue3 max-w-[80%] md:px-7 rounded-2xl"
       >
         <Box>
           <Typography variant="h4" className="py-5">
