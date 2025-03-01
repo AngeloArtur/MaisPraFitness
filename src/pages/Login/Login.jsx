@@ -14,17 +14,28 @@ import Toast from "../../components/Toast/Toast";
 
 import { MdOutlineVisibility, MdOutlineVisibilityOff, MdOutlineAccountCircle } from "react-icons/md";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [showError, setShowError] = useState(false);
     const [openToast, setOpenToast] = useState(false);
+    const navigate = useNavigate();
+    const { login } = useAuth();
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
-    const handleClickError = () => {
-        setShowError((show) => !show);
-        setOpenToast(true);
+
+    const CheckCredentials = () => {
+        if (email && password) {
+            login();
+            navigate("/dashboard");
+        } else {
+            setShowError((show) => !show);
+            setOpenToast(true);
+        }
     };
 
     return (
@@ -42,6 +53,8 @@ export default function Login() {
                                 error={showError}
                                 id="outlined-adornment-login"
                                 type="text"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                                 endAdornment={
                                     <InputAdornment position="end">
                                         <IconButton edge="end">
@@ -61,6 +74,8 @@ export default function Login() {
                                 error={showError}
                                 id="outlined-adornment-password"
                                 type={showPassword ? "text" : "password"}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
                                 endAdornment={
                                     <InputAdornment position="end">
                                         <IconButton
@@ -77,7 +92,7 @@ export default function Login() {
                         <Button
                             variant="contained"
                             className="!bg-tint-blue1 hover:!bg-tint-blue2"
-                            onClick={handleClickError}>
+                            onClick={CheckCredentials}>
                             Login
                         </Button>
                     </form>
