@@ -8,6 +8,8 @@ import RegisterForm from "../pages/Register-Form/RegisterForm";
 import { useAuth } from "../context/AuthContext";
 import { useEffect } from "react";
 import ExerciseForm from "../pages/Edit-Exercise/EditExercise";
+import UsersManagement from "../pages/UserManagement/UserManagement";
+import Measurement from "../pages/MeasurementRegistry/MeasurementRegistry";
 
 export default function AppRoutes() {
     const navigate = useNavigate();
@@ -26,10 +28,16 @@ export default function AppRoutes() {
             <Route path="/dashboard" element={<AlunoDashboard />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/user-list" element={<ListaUsuarios />} />
-            <Route path="/studentlist" element={<ExerciseForm />}>
-                {/* <Route path="/edit"></Route> */}
+            <Route path="student-list">
+                <Route index element={<StudentList />} />
+                <Route path=":measurement" element={<Measurement />} />
+                <Route path=":edit-exercise" element={<ExerciseForm />}></Route>
             </Route>
-            <Route path="/register-form" element={<RegisterForm />} />
+            <Route path="/users-management" element={<UsersManagement />} />
+            <Route path="/register-form">
+                <Route index element={<RegisterForm />} />
+                <Route path=":measurement" element={<Measurement />} />
+            </Route>
         </Routes>
     );
 }
