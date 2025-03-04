@@ -15,10 +15,11 @@ import {
     MdOutlineMenu,
     MdPersonPin,
     MdDashboard,
-    MdSettings,
+    MdPerson ,
     MdExitToApp,
     MdGroups,
     MdOutlinePersonAddAlt,
+    MdManageAccounts,
 } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -33,19 +34,20 @@ const NAVIGATION = [
     {
         segment: "lista-usuarios",
         title: "Lista de Usuários",
-        icon: <MdPersonPin className="text-black text-xl" />,
+        icon: <MdPersonPin className="text-secondary text-xl" />,
         route: "/user-list",
     },
     {
         segment: "studentlist",
         title: "Lista alunos",
         icon: <MdGroups className="text-secondary text-xl" />,
-        route: "/studentlist",
+        route: "/student-list",
     },
     {
-        segment: "settings",
-        title: "Settings",
-        icon: <MdSettings className="text-secondary text-xl" />,
+        segment: "usersmanagement",
+        title: "Gestão de usuários",
+        icon: <MdManageAccounts className="text-secondary text-xl" />,
+        route: "/users-management",
     },
     {
         segment: "Create",
@@ -59,14 +61,15 @@ const NAVIGATION = [
 
     {
         segment: "reports",
-        title: "Reports",
-        icon: <MdPersonPin className="text-secondary text-xl" />,
+        title: "Meu Perfil",
+        icon: <MdPerson  className="text-secondary text-xl" />,
         route: "/profile",
     },
     {
         segment: "exitapp",
         title: "Exit App",
         icon: <MdExitToApp className="text-secondary text-xl" />,
+        route: "/login",
     },
 ];
 
