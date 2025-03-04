@@ -62,9 +62,14 @@ const columns = [
         headerName: "",
         width: 350,
         renderCell: () => (
-            <Button>
-                <Link to="/profile">Ver treinos</Link>
-            </Button>
+            <>
+                <Button className="flex gap-5">
+                    <Link to="measurement">Medidas</Link>
+                </Button>
+                <Button className="flex gap-5">
+                    <Link to="edit-exercise">Editar treino</Link>
+                </Button>
+            </>
         ),
     },
 ];
