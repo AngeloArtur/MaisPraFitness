@@ -12,6 +12,11 @@ import {
 import { ApiCep } from "../../Apis/ViaCep";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Toast from "../../components/Toast/Toast";
 
 export default function RegisterForm() {
@@ -25,6 +30,25 @@ export default function RegisterForm() {
         neighborhood: "",
         street: "",
     });
+    const [userType, setUserType] = useState("");
+    const [registerNav, setRegisterNav] = useState("");
+
+    const handleUserTypeChange = (event) => {
+        setUserType(event.target.value);
+        console.log(event.target.value);
+    };
+
+    const handleRegisterNavigation = () => {
+        if (userType == "Aluno") {
+            setRegisterNav("measurement");
+        } else if (userType === "Funcionário") {
+            setRegisterNav("employee");
+        } else if (userType === "") {
+            setOpenToast(true);
+            setToastMessage("Por favor selecione um tipo de usuário");
+            setToastType("error");
+        }
+    };
 
     const handleCepChange = async (event) => {
         const newCep = event.target.value;
@@ -70,11 +94,12 @@ export default function RegisterForm() {
                         <InputLabel id="select-type">Tipo de usuário</InputLabel>
                         <Select
                             label="Tipo de usuário"
+                            value={userType}
+                            onChange={handleUserTypeChange}
                             id="select-type"
                             className="w-full bg-white-100 text-black md:w-96">
-                            <MenuItem>Aluno</MenuItem>
-                            <MenuItem>Professor</MenuItem>
-                            <MenuItem>Administrador</MenuItem>
+                            <MenuItem value="Aluno">Aluno</MenuItem>
+                            <MenuItem value="Funcionário">Funcionário</MenuItem>
                         </Select>
                     </FormControl>
                 </Box>
@@ -84,14 +109,12 @@ export default function RegisterForm() {
                         <InputLabel htmlFor="outlined-adornment-name">Nome</InputLabel>
                         <OutlinedInput className="bg-white-100" id="outlined-adornment-name" type="text" label="Nome" />
                     </FormControl>
-                    <FormControl variant="outlined" className="w-full">
-                        <InputLabel htmlFor="outlined-adornment-lastName">Sobrenome</InputLabel>
-                        <OutlinedInput
-                            className="bg-white-100"
-                            id="outlined-adornment-lastName"
-                            type="text"
-                            label="Sobrenome"
-                        />
+                    <FormControl className="w-full">
+                        <LocalizationProvider dateAdapter={AdapterDayjs} className="!pb-8">
+                            <DemoContainer components={["DatePicker"]}>
+                                <DatePicker label="Data de nascimento" className="bg-white-100 !pt-0" />
+                            </DemoContainer>
+                        </LocalizationProvider>
                     </FormControl>
                     <FormControl variant="outlined" className="w-full">
                         <InputLabel htmlFor="outlined-adornment-CPF">CPF</InputLabel>
@@ -109,6 +132,15 @@ export default function RegisterForm() {
                         />
                     </FormControl>
                     <FormControl variant="outlined" className="w-full">
+                        <InputLabel htmlFor="outlined-adornment-password">Senha</InputLabel>
+                        <OutlinedInput
+                            className="bg-white-100"
+                            id="outlined-adornment-password"
+                            type="password"
+                            label="Senha"
+                        />
+                    </FormControl>
+                    <FormControl variant="outlined" className="w-full">
                         <InputLabel htmlFor="outlined-adornment-phone">Telefone</InputLabel>
                         <OutlinedInput
                             className="bg-white-100"
@@ -120,7 +152,6 @@ export default function RegisterForm() {
                 </Box>
 
                 <Divider></Divider>
-
                 <Box className="flex flex-col gap-3 lg:flex-row ">
                     <FormControl variant="outlined" className="w-full">
                         <InputLabel htmlFor="outlined-adornment-CEP">CEP</InputLabel>
@@ -177,9 +208,129 @@ export default function RegisterForm() {
                     </FormControl>
                 </Box>
 
+                {userType === "Aluno" ? (
+                    <div>
+                        <Divider />
+
+                        <Box className="flex flex-col gap-3 lg:flex-row pt-6">
+                            <FormControl variant="outlined" className="w-full lg:w-1/3">
+                                <InputLabel id="select-type">Plano</InputLabel>
+                                <Select
+                                    label="Plano"
+                                    id="select-type"
+                                    className="bg-white-100 text-black"
+                                    onChange={(e) => setPlano(e.target.value)} // função para atualizar o estado
+                                >
+                                    <MenuItem value="Mensal">Mensal</MenuItem>
+                                    <MenuItem value="Anual">Anual</MenuItem>
+                                </Select>
+                            </FormControl>
+                            <FormControl variant="outlined" className="w-full lg:w-1/3">
+                                <InputLabel htmlFor="outlined-adornment-profissao">Profissão</InputLabel>
+                                <OutlinedInput
+                                    className="bg-white-100"
+                                    id="outlined-adornment-profissao"
+                                    type="text"
+                                    label="Profissão"
+                                    onChange={(e) => setProfissao(e.target.value)} // função para atualizar o estado
+                                />
+                            </FormControl>
+                            <FormControl variant="outlined" className="w-full lg:w-1/3">
+                                <InputLabel htmlFor="outlined-adornment-enfermidades">Enfermidades</InputLabel>
+                                <OutlinedInput
+                                    className="bg-white-100"
+                                    id="outlined-adornment-enfermidades"
+                                    type="text"
+                                    label="Enfermidades"
+                                    onChange={(e) => setEnfermidades(e.target.value)} // função para atualizar o estado
+                                />
+                            </FormControl>
+                        </Box>
+
+                        <Box className="flex flex-col gap-3 lg:flex-row pt-6">
+                            <FormControl variant="outlined" className="w-full">
+                                <LocalizationProvider dateAdapter={AdapterDayjs} className="!pb-8">
+                                    <DemoContainer components={["DatePicker"]}>
+                                        <DatePicker label="Data de pagamento" className="bg-white-100 !pt-0" />
+                                    </DemoContainer>
+                                </LocalizationProvider>
+                            </FormControl>
+                            <FormControl variant="outlined" className="w-full">
+                                <LocalizationProvider dateAdapter={AdapterDayjs} className="!pb-8">
+                                    <DemoContainer components={["DatePicker"]}>
+                                        <DatePicker label="Data de vencimento" className="bg-white-100 !pt-0" />
+                                    </DemoContainer>
+                                </LocalizationProvider>
+                            </FormControl>
+                            <FormControl variant="outlined" className="w-full">
+                                <InputLabel htmlFor="outlined-adornment-ultimo-exercicio">Último Exercício</InputLabel>
+                                <OutlinedInput
+                                    className="bg-white-100"
+                                    id="outlined-adornment-ultimo-exercicio"
+                                    type="text"
+                                    label="Último Exercício"
+                                    onChange={(e) => setUltimoExercicio(e.target.value)} // função para atualizar o estado
+                                />
+                            </FormControl>
+                        </Box>
+                    </div>
+                ) : (
+                    <div>
+                        <Divider />
+
+                        <Box className="flex flex-col gap-3 lg:flex-row pt-6">
+                            <FormControl variant="outlined" className="w-full">
+                                <InputLabel htmlFor="outlined-adornment-carteira-trabalho">
+                                    Carteira de Trabalho
+                                </InputLabel>
+                                <OutlinedInput
+                                    className="bg-white-100"
+                                    id="outlined-adornment-carteira-trabalho"
+                                    type="text"
+                                    label="Carteira de Trabalho"
+                                    onChange={(e) => setCarteiraTrabalho(e.target.value)} // função para atualizar o estado
+                                />
+                            </FormControl>
+                            <FormControl variant="outlined" className="w-full">
+                                <InputLabel htmlFor="outlined-adornment-salario">Salário</InputLabel>
+                                <OutlinedInput
+                                    className="bg-white-100"
+                                    id="outlined-adornment-salario"
+                                    type="number"
+                                    label="Salário"
+                                    onChange={(e) => setSalario(e.target.value)} // função para atualizar o estado
+                                />
+                            </FormControl>
+                        </Box>
+                        <Box className="flex flex-col gap-3 lg:flex-row pt-6">
+                            <FormControl variant="outlined" className="w-full">
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <DemoContainer components={["TimePicker"]}>
+                                        <TimePicker label="Hora de entrada" className="bg-white-100 !pt-0" />
+                                    </DemoContainer>
+                                </LocalizationProvider>
+                            </FormControl>
+                            <FormControl variant="outlined" className="w-full">
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <DemoContainer components={["TimePicker"]}>
+                                        <TimePicker label="Hora de saída" className="bg-white-100 !pt-0" />
+                                    </DemoContainer>
+                                </LocalizationProvider>
+                            </FormControl>
+                            <FormControl variant="outlined" className="w-full">
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <DemoContainer components={["TimePicker"]}>
+                                        <TimePicker label="Hora extra" className="bg-white-100 !pt-0" />
+                                    </DemoContainer>
+                                </LocalizationProvider>
+                            </FormControl>
+                        </Box>
+                    </div>
+                )}
+
                 <Box className="flex flex-col gap-4 justify-center items-center">
                     <Button className="!bg-secondary !mt-4 w-[30%]" variant="contained">
-                        <Link to="/measurement-registry">Avançar</Link>
+                        {userType === "Aluno" ? <Link to="measurement">Avançar</Link> : "Avançar"}
                     </Button>
                 </Box>
             </Box>
