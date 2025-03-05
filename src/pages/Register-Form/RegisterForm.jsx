@@ -10,7 +10,7 @@ import {
     Divider,
 } from "@mui/material";
 import { ApiCep } from "../../Apis/ViaCep";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -18,34 +18,110 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Toast from "../../components/Toast/Toast";
+import api from "../../Apis/backend/MaisPraTiBack";
+import dayjs from "dayjs";
+
+const formatForDatabase = (date) => {
+    return dayjs(date).format("YYYY-MM-DD");
+};
 
 export default function RegisterForm() {
+    const authCode =
+        "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ0ZXN0ZUBnbWFpbC5jb20iLCJpYXQiOjE3NDEyMTI2OTIsImV4cCI6MTc0MTIxMzU5Mn0.Gu5qBouKANtdq6CedxkQbs_gfZxxJcey3DKXWelCkPNfrz3AWgrNTcmOn8kx70kmZa3BKHN-SgZ5SEmmz8je2NQj_9PA4HKc-IRwnJMHugUuHMTvvVKvUsrjozFlTGyqdJ1PbWAKPBA8zInwCJOCJfpIgrvY88R-8E66p1JwwFOxDrQOk0RizQPNqYP3BX7yj1GDH19MhsaQ0RV7Ka0jboWistYfQ8p5JBkbGkBq3U50m9pDn4L8ssL1vDA4QeOV2sD_29px0ATjLp8DsAKJrVLrxoooKRqPKKqn5GVcayj8jvYzwXyIPK-DR5yOPtH0_1_sm-IWKHH4m1LvcAgPmw";
     const [openToast, setOpenToast] = useState(false);
     const [toastMessage, setToastMessage] = useState("");
     const [toastType, setToastType] = useState("error");
     const [cep, setCep] = useState("");
     const [responseCep, setResponseCep] = useState({
-        state: "",
-        city: "",
         neighborhood: "",
         street: "",
+        complement: "",
     });
     const [userType, setUserType] = useState("");
-    const [registerNav, setRegisterNav] = useState("");
+    const [commonData, setCommonData] = useState({
+        nome: "",
+        email: "",
+        documento: "",
+        data_nascimento: "",
+        senha: "",
+        role: "",
+        data_cadastro: dayjs().format("YYYY-MM-DD"),
+        imagem_perfil: null,
+        ativo: true,
+        endereco: {
+            rua: "",
+            bairro: "",
+            cep: "",
+            complemento: "",
+        },
+    });
 
-    const handleUserTypeChange = (event) => {
-        setUserType(event.target.value);
-        console.log(event.target.value);
+    const [studentData, setStudentData] = useState({
+        ...commonData,
+        profissao: "",
+        enfermidades: "",
+        plano: "",
+        altura: 0,
+        data_pagamento: "",
+        data_vencimento: "",
+        ultimo_exercicio: "",
+    });
+
+    const [employeeData, setEmployeeData] = useState({
+        ...commonData, // Incluindo os campos em comum
+        carteira_trabalho: "",
+        salario: 0,
+    });
+
+    useEffect(() => {
+        setStudentData((prev) => ({
+            ...prev,
+            ...commonData,
+        }));
+        setEmployeeData((prev) => ({
+            ...prev,
+            ...commonData,
+        }));
+    }, [commonData]);
+
+    const handleDateChange = (date) => {
+        const formattedDateForDatabase = formatForDatabase(date);
+        setCommonData({ ...commonData, data_nascimento: formattedDateForDatabase });
     };
 
-    const handleRegisterNavigation = () => {
-        if (userType == "Aluno") {
-            setRegisterNav("measurement");
-        } else if (userType === "Funcionário") {
-            setRegisterNav("employee");
-        } else if (userType === "") {
+    const handleUserTypeChange = (event) => {
+        const selectedType = event.target.value;
+        setUserType(selectedType);
+        // Atualiza a role nos dados comuns quando o tipo de usuário muda
+        setCommonData((prev) => ({
+            ...prev,
+            role: selectedType,
+        }));
+    };
+
+    const handleRegisterUser = async () => {
+        try {
+            if (userType === "aluno") {
+                const studentPayload = {
+                    ...commonData,
+                    ...studentData,
+                    role: userType,
+                };
+                console.log("Dados do aluno:", studentPayload);
+                await api.post("/aluno", studentPayload, { headers: { Authorization: authCode } });
+            } else {
+                const employeePayload = {
+                    ...commonData,
+                    ...employeeData,
+                    role: userType,
+                };
+                console.log("Dados do funcionário:", employeePayload);
+                await api.post("/funcionario", employeePayload, { headers: { Authorization: authCode } });
+            }
+        } catch (error) {
+            console.error("Erro ao registrar o usuário:", error);
             setOpenToast(true);
-            setToastMessage("Por favor selecione um tipo de usuário");
+            setToastMessage("Erro ao registrar o usuário: " + error.message);
             setToastType("error");
         }
     };
@@ -58,11 +134,21 @@ export default function RegisterForm() {
             const cepData = await ApiCep(newCep);
             if (!("erro" in cepData)) {
                 setResponseCep({
-                    state: cepData.uf,
-                    city: cepData.localidade,
                     neighborhood: cepData.bairro,
                     street: cepData.logradouro,
+                    complement: cepData.complemento,
                 });
+
+                setCommonData((prev) => ({
+                    ...prev,
+                    endereco: {
+                        ...prev.endereco,
+                        cep: newCep,
+                        rua: cepData.logradouro,
+                        bairro: cepData.bairro,
+                        complemento: cepData.complemento,
+                    },
+                }));
             } else {
                 setOpenToast(true);
                 setToastMessage("CEP não encontrado, por favor verifique o valor digitado");
@@ -98,8 +184,10 @@ export default function RegisterForm() {
                             onChange={handleUserTypeChange}
                             id="select-type"
                             className="w-full bg-white-100 text-black md:w-96">
-                            <MenuItem value="Aluno">Aluno</MenuItem>
-                            <MenuItem value="Funcionário">Funcionário</MenuItem>
+                            <MenuItem value="aluno">Aluno</MenuItem>
+                            <MenuItem value="professor">Professor</MenuItem>
+                            <MenuItem value="recepcionista">Recepcionista</MenuItem>
+                            <MenuItem value="administrador">Administrador</MenuItem>
                         </Select>
                     </FormControl>
                 </Box>
@@ -107,18 +195,37 @@ export default function RegisterForm() {
                 <Box className="flex flex-col gap-3 lg:flex-row ">
                     <FormControl variant="outlined" className="w-full">
                         <InputLabel htmlFor="outlined-adornment-name">Nome</InputLabel>
-                        <OutlinedInput className="bg-white-100" id="outlined-adornment-name" type="text" label="Nome" />
+                        <OutlinedInput
+                            className="bg-white-100"
+                            id="outlined-adornment-name"
+                            type="text"
+                            label="Nome"
+                            onChange={(e) => setCommonData({ ...commonData, nome: e.target.value })}
+                        />
                     </FormControl>
                     <FormControl className="w-full">
                         <LocalizationProvider dateAdapter={AdapterDayjs} className="!pb-8">
-                            <DemoContainer components={["DatePicker"]}>
-                                <DatePicker label="Data de nascimento" className="bg-white-100 !pt-0" />
+                            <DemoContainer components={["DatePicker"]} className="!mt-0">
+                                <DatePicker
+                                    maxDate={dayjs()}
+                                    label="Data de nascimento"
+                                    className="bg-white-100"
+                                    value={commonData.data_nascimento ? dayjs(commonData.data_nascimento) : null}
+                                    onChange={(e) => handleDateChange(e)}
+                                    format="DD/MM/YYYY"
+                                />
                             </DemoContainer>
                         </LocalizationProvider>
                     </FormControl>
-                    <FormControl variant="outlined" className="w-full">
+                    <FormControl variant="outlined" className="w-full pt-4 mb-0">
                         <InputLabel htmlFor="outlined-adornment-CPF">CPF</InputLabel>
-                        <OutlinedInput className="bg-white-100" id="outlined-adornment-CPF" type="text" label="CPF" />
+                        <OutlinedInput
+                            className="bg-white-100"
+                            id="outlined-adornment-CPF"
+                            type="text"
+                            label="CPF"
+                            onChange={(e) => setCommonData({ ...commonData, documento: e.target.value })}
+                        />
                     </FormControl>
                 </Box>
                 <Box className="flex flex-col gap-3 lg:flex-row ">
@@ -129,6 +236,7 @@ export default function RegisterForm() {
                             id="outlined-adornment-mail"
                             type="text"
                             label="Email"
+                            onChange={(e) => setCommonData({ ...commonData, email: e.target.value })}
                         />
                     </FormControl>
                     <FormControl variant="outlined" className="w-full">
@@ -138,15 +246,7 @@ export default function RegisterForm() {
                             id="outlined-adornment-password"
                             type="password"
                             label="Senha"
-                        />
-                    </FormControl>
-                    <FormControl variant="outlined" className="w-full">
-                        <InputLabel htmlFor="outlined-adornment-phone">Telefone</InputLabel>
-                        <OutlinedInput
-                            className="bg-white-100"
-                            id="outlined-adornment-phone"
-                            type="text"
-                            label="Telefone"
+                            onChange={(e) => setCommonData({ ...commonData, senha: e.target.value })}
                         />
                     </FormControl>
                 </Box>
@@ -165,28 +265,6 @@ export default function RegisterForm() {
                         />
                     </FormControl>
                     <FormControl variant="outlined" className="w-full">
-                        <InputLabel htmlFor="outlined-adornment-state">Estado</InputLabel>
-                        <OutlinedInput
-                            className="bg-white-100"
-                            id="outlined-adornment-state"
-                            type="text"
-                            label="Estado"
-                            value={responseCep.state}
-                        />
-                    </FormControl>
-                    <FormControl variant="outlined" className="w-full">
-                        <InputLabel htmlFor="outlined-adornment-city">Cidade</InputLabel>
-                        <OutlinedInput
-                            className="bg-white-100"
-                            id="outlined-adornment-city"
-                            type="text"
-                            label="Cidade"
-                            value={responseCep.city}
-                        />
-                    </FormControl>
-                </Box>
-                <Box className="flex flex-col gap-3 lg:flex-row ">
-                    <FormControl variant="outlined" className="w-full">
                         <InputLabel htmlFor="outlined-adornment-street">Rua</InputLabel>
                         <OutlinedInput
                             className="bg-white-100"
@@ -194,8 +272,19 @@ export default function RegisterForm() {
                             type="text"
                             label="Rua"
                             value={responseCep.street}
+                            onChange={(e) =>
+                                setCommonData((prev) => ({
+                                    ...prev,
+                                    endereco: {
+                                        ...prev.endereco,
+                                        rua: e.target.value,
+                                    },
+                                }))
+                            }
                         />
                     </FormControl>
+                </Box>
+                <Box className="flex flex-col gap-3 lg:flex-row ">
                     <FormControl variant="outlined" className="w-full">
                         <InputLabel htmlFor="outlined-adornment-neighbourhood">Bairro</InputLabel>
                         <OutlinedInput
@@ -204,11 +293,39 @@ export default function RegisterForm() {
                             type="text"
                             label="Bairro"
                             value={responseCep.neighborhood}
+                            onChange={(e) =>
+                                setCommonData((prev) => ({
+                                    ...prev,
+                                    endereco: {
+                                        ...prev.endereco,
+                                        bairro: e.target.value,
+                                    },
+                                }))
+                            }
+                        />
+                    </FormControl>
+                    <FormControl variant="outlined" className="w-full">
+                        <InputLabel htmlFor="outlined-adornment-neighbourhood">Complemento</InputLabel>
+                        <OutlinedInput
+                            className="bg-white-100"
+                            id="outlined-adornment-complement"
+                            type="text"
+                            label="Complemento"
+                            value={responseCep.complement}
+                            onChange={(e) =>
+                                setCommonData((prev) => ({
+                                    ...prev,
+                                    endereco: {
+                                        ...prev.endereco,
+                                        complemento: e.target.value,
+                                    },
+                                }))
+                            }
                         />
                     </FormControl>
                 </Box>
 
-                {userType === "Aluno" ? (
+                {userType === "aluno" ? (
                     <div>
                         <Divider />
 
@@ -219,8 +336,7 @@ export default function RegisterForm() {
                                     label="Plano"
                                     id="select-type"
                                     className="bg-white-100 text-black"
-                                    onChange={(e) => setPlano(e.target.value)} // função para atualizar o estado
-                                >
+                                    onChange={(e) => setStudentData({ ...studentData, plano: e.target.value })}>
                                     <MenuItem value="Mensal">Mensal</MenuItem>
                                     <MenuItem value="Anual">Anual</MenuItem>
                                 </Select>
@@ -232,7 +348,7 @@ export default function RegisterForm() {
                                     id="outlined-adornment-profissao"
                                     type="text"
                                     label="Profissão"
-                                    onChange={(e) => setProfissao(e.target.value)} // função para atualizar o estado
+                                    onChange={(e) => setStudentData({ ...studentData, profissao: e.target.value })}
                                 />
                             </FormControl>
                             <FormControl variant="outlined" className="w-full lg:w-1/3">
@@ -242,12 +358,12 @@ export default function RegisterForm() {
                                     id="outlined-adornment-enfermidades"
                                     type="text"
                                     label="Enfermidades"
-                                    onChange={(e) => setEnfermidades(e.target.value)} // função para atualizar o estado
+                                    onChange={(e) => setStudentData({ ...studentData, enfermidades: e.target.value })}
                                 />
                             </FormControl>
                         </Box>
 
-                        <Box className="flex flex-col gap-3 lg:flex-row pt-6">
+                        <Box className="flex flex-col w-full gap-3 lg:flex-row pt-6">
                             <FormControl variant="outlined" className="w-full">
                                 <LocalizationProvider dateAdapter={AdapterDayjs} className="!pb-8">
                                     <DemoContainer components={["DatePicker"]}>
@@ -261,16 +377,6 @@ export default function RegisterForm() {
                                         <DatePicker label="Data de vencimento" className="bg-white-100 !pt-0" />
                                     </DemoContainer>
                                 </LocalizationProvider>
-                            </FormControl>
-                            <FormControl variant="outlined" className="w-full">
-                                <InputLabel htmlFor="outlined-adornment-ultimo-exercicio">Último Exercício</InputLabel>
-                                <OutlinedInput
-                                    className="bg-white-100"
-                                    id="outlined-adornment-ultimo-exercicio"
-                                    type="text"
-                                    label="Último Exercício"
-                                    onChange={(e) => setUltimoExercicio(e.target.value)} // função para atualizar o estado
-                                />
                             </FormControl>
                         </Box>
                     </div>
@@ -288,7 +394,9 @@ export default function RegisterForm() {
                                     id="outlined-adornment-carteira-trabalho"
                                     type="text"
                                     label="Carteira de Trabalho"
-                                    onChange={(e) => setCarteiraTrabalho(e.target.value)} // função para atualizar o estado
+                                    onChange={(e) =>
+                                        setEmployeeData({ ...employeeData, carteira_trabalho: e.target.value })
+                                    }
                                 />
                             </FormControl>
                             <FormControl variant="outlined" className="w-full">
@@ -298,39 +406,17 @@ export default function RegisterForm() {
                                     id="outlined-adornment-salario"
                                     type="number"
                                     label="Salário"
-                                    onChange={(e) => setSalario(e.target.value)} // função para atualizar o estado
+                                    onChange={(e) => setEmployeeData({ ...employeeData, salario: e.target.value })}
                                 />
-                            </FormControl>
-                        </Box>
-                        <Box className="flex flex-col gap-3 lg:flex-row pt-6">
-                            <FormControl variant="outlined" className="w-full">
-                                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                    <DemoContainer components={["TimePicker"]}>
-                                        <TimePicker label="Hora de entrada" className="bg-white-100 !pt-0" />
-                                    </DemoContainer>
-                                </LocalizationProvider>
-                            </FormControl>
-                            <FormControl variant="outlined" className="w-full">
-                                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                    <DemoContainer components={["TimePicker"]}>
-                                        <TimePicker label="Hora de saída" className="bg-white-100 !pt-0" />
-                                    </DemoContainer>
-                                </LocalizationProvider>
-                            </FormControl>
-                            <FormControl variant="outlined" className="w-full">
-                                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                    <DemoContainer components={["TimePicker"]}>
-                                        <TimePicker label="Hora extra" className="bg-white-100 !pt-0" />
-                                    </DemoContainer>
-                                </LocalizationProvider>
                             </FormControl>
                         </Box>
                     </div>
                 )}
 
                 <Box className="flex flex-col gap-4 justify-center items-center">
-                    <Button className="!bg-secondary !mt-4 w-[30%]" variant="contained">
-                        {userType === "Aluno" ? <Link to="measurement">Avançar</Link> : "Avançar"}
+                    <Button className="!bg-secondary !mt-4 w-[30%]" variant="contained" onClick={handleRegisterUser}>
+                        {/* {userType === "Aluno" ? <Link to="measurement">Avançar</Link> : "Avançar"} */}
+                        Avançar
                     </Button>
                 </Box>
             </Box>
