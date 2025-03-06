@@ -5,7 +5,6 @@ import { BrowserRouter, useLocation } from "react-router-dom";
 import Sidebar, { drawerWidth } from "./components/Sidebar/Sidebar";
 import MainRoutes from "./Routes/MainRoutes.jsx";
 import { useTheme } from "@mui/material/styles";
-import EditarTreino from "./pages/EditarTreino/EditarTreino.jsx";
 
 const closedWidth = (theme) => `calc(${theme.spacing(7)} + 1px)`;
 
@@ -29,7 +28,7 @@ const App = () => {
                         transition: "margin 0.3s ease",
                     }),
                 }}>
-                <EditarTreino />
+                <MainRoutes />
             </main>
         </>
     );
