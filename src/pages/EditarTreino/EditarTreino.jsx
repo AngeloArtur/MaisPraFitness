@@ -56,108 +56,119 @@ export default function ExerciseForm() {
       <Box className="bg-[#E3F2FD] rounded-xl p-20 shadow-lg w-full max-w-5xl">
         <Typography
           variant="h4"
-          className="font-bold text-base md:text-xl text-[#021024] text-center mb-8"
-          sx={{ fontFamily: 'Poppins, sans-serif' }} // Aplicando fonte Poppins
+          className="font-bold text-base md:text-xl text-[#021024] text-center mb-8 mt-[-80px]"
+          sx={{ fontFamily: 'Poppins, sans-serif' }}
         >
           Adicione seus exercícios
         </Typography>
 
         {[0, 1].map((index) => (
-          <Box key={index} className="grid grid-cols-4 gap-4 items-center mt-4">
+          <Box key={index} className="flex flex-col md:flex-row items-center justify-center gap-4 mt-4">
             {/* Nome do exercício */}
-            <TextField
-              label="Nome do exercício"
-              variant="outlined"
-              fullWidth
-              value={exerciseNames[index]}
-              onChange={(e) => {
-                const updatedNames = [...exerciseNames];
-                updatedNames[index] = e.target.value;
-                setExerciseNames(updatedNames);
-              }}
-              sx={{
-                fontFamily: 'Poppins, sans-serif', // Fonte Poppins nos inputs
-                "& .MuiInputBase-input": {
-                  color: "white", // Cor do texto dentro do input
-                },
-                "& .MuiInputLabel-root": {
-                  color: "white", // Cor da label
-                },
-                backgroundColor: "#5483B3",
-                borderRadius: "8px",
-              }}
-            />
+            <Box className="w-full md:w-1/4">
+              <TextField
+                label="Nome do exercício"
+                variant="outlined"
+                fullWidth
+                value={exerciseNames[index]}
+                onChange={(e) => {
+                  const updatedNames = [...exerciseNames];
+                  updatedNames[index] = e.target.value;
+                  setExerciseNames(updatedNames);
+                }}
+                sx={{
+                  fontFamily: 'Poppins, sans-serif',
+                  "& .MuiInputBase-input": {
+                    color: "white",
+                    textAlign: "center",
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "white",
+                  },
+                  backgroundColor: "#5483B3",
+                  borderRadius: "8px",
+                }}
+              />
+            </Box>
 
             {/* Dropdown de Repetições */}
-            <FormControl fullWidth sx={{ backgroundColor: "#5483B3", borderRadius: "8px" }}>
-              <InputLabel id={`reps-label-${index}`} sx={{ color: "white", fontFamily: 'Poppins, sans-serif' }}>
-                Repetições
-              </InputLabel>
-              <Select
-                labelId={`reps-label-${index}`}
-                value={reps}
-                onChange={(e) => setReps(e.target.value)}
-                label="Repetições"
-                sx={{
-                  color: "white",
-                  fontFamily: 'Poppins, sans-serif', // Fonte Poppins no dropdown
-                  "& .MuiSelect-icon": {
-                    color: "white", // Cor do ícone
-                  },
-                  "& .MuiMenuItem-root": {
-                    color: "white", // Cor dos itens do menu
-                  },
-                }}
-              >
-                <MenuItem value={5}>5</MenuItem>
-                <MenuItem value={10}>10</MenuItem>
-                <MenuItem value={15}>15</MenuItem>
-              </Select>
-            </FormControl>
-
-            {/* Dropdown de Carga */}
-            <FormControl fullWidth sx={{ backgroundColor: "#5483B3", borderRadius: "8px" }}>
-              <InputLabel id={`load-label-${index}`} sx={{ color: "white", fontFamily: 'Poppins, sans-serif' }}>
-                Carga
-              </InputLabel>
-              <Select
-                labelId={`load-label-${index}`}
-                value={load}
-                onChange={(e) => setLoad(e.target.value)}
-                label="Carga"
-                sx={{
-                  color: "white",
-                  fontFamily: 'Poppins, sans-serif', // Fonte Poppins no dropdown
-                  "& .MuiSelect-icon": {
-                    color: "white", // Cor do ícone
-                  },
-                  "& .MuiMenuItem-root": {
-                    color: "white", // Cor dos itens do menu
-                  },
-                }}
-              >
-                <MenuItem value="5kg">5kg</MenuItem>
-                <MenuItem value="10kg">10kg</MenuItem>
-                <MenuItem value="15kg">15kg</MenuItem>
-              </Select>
-            </FormControl>
-
-            {/* Checkbox de Concluído */}
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={checkedItems[index] || false}
-                  onChange={() => toggleCheckbox(index)}
+            <Box className="w-full md:w-1/4">
+              <FormControl fullWidth sx={{ backgroundColor: "#5483B3", borderRadius: "8px" }}>
+                <InputLabel id={`reps-label-${index}`} sx={{ color: "white", fontFamily: 'Poppins, sans-serif' }}>
+                  Repetições
+                </InputLabel>
+                <Select
+                  labelId={`reps-label-${index}`}
+                  value={reps}
+                  onChange={(e) => setReps(e.target.value)}
+                  label="Repetições"
                   sx={{
-                    color: "#021024",
-                    "&.Mui-checked": {
-                      color: "#5483B3",
+                    color: "white",
+                    fontFamily: 'Poppins, sans-serif',
+                    textAlign: "center",
+                    "& .MuiSelect-select": {
+                      textAlign: "center",
+                    },
+                    "& .MuiSelect-icon": {
+                      color: "white",
                     },
                   }}
-                />
-              }
-              label=""
-            />
+                >
+                  <MenuItem value={5}>5</MenuItem>
+                  <MenuItem value={10}>10</MenuItem>
+                  <MenuItem value={15}>15</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+
+            {/* Dropdown de Carga */}
+            <Box className="w-full md:w-1/4">
+              <FormControl fullWidth sx={{ backgroundColor: "#5483B3", borderRadius: "8px" }}>
+                <InputLabel id={`load-label-${index}`} sx={{ color: "white", fontFamily: 'Poppins, sans-serif' }}>
+                  Carga
+                </InputLabel>
+                <Select
+                  labelId={`load-label-${index}`}
+                  value={load}
+                  onChange={(e) => setLoad(e.target.value)}
+                  label="Carga"
+                  sx={{
+                    color: "white",
+                    fontFamily: 'Poppins, sans-serif',
+                    textAlign: "center",
+                    "& .MuiSelect-select": {
+                      textAlign: "center",
+                    },
+                    "& .MuiSelect-icon": {
+                      color: "white",
+                    },
+                  }}
+                >
+                  <MenuItem value="5kg">5kg</MenuItem>
+                  <MenuItem value="10kg">10kg</MenuItem>
+                  <MenuItem value="15kg">15kg</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+
+            {/* Checkbox de Concluído */}
+            <Box className="w-full md:w-auto flex justify-center">
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={checkedItems[index] || false}
+                    onChange={() => toggleCheckbox(index)}
+                    sx={{
+                      color: "#021024",
+                      "&.Mui-checked": {
+                        color: "#5483B3",
+                      },
+                    }}
+                  />
+                }
+                label=""
+              />
+            </Box>
           </Box>
         ))}
 
@@ -171,7 +182,7 @@ export default function ExerciseForm() {
               padding: "12px 32px",
               borderRadius: "8px",
               fontSize: "14px",
-              fontFamily: 'Poppins, sans-serif', // Fonte Poppins no botão
+              fontFamily: 'Poppins, sans-serif',
               "&:hover": {
                 backgroundColor: "#021024",
               },
