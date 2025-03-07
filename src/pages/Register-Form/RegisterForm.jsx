@@ -15,7 +15,6 @@ import { Link } from "react-router-dom";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Toast from "../../components/Toast/Toast";
 import api from "../../Apis/backend/MaisPraTiBack";
@@ -27,7 +26,7 @@ const formatForDatabase = (date) => {
 
 export default function RegisterForm() {
     const authCode =
-        "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ0ZXN0ZUBnbWFpbC5jb20iLCJpYXQiOjE3NDEyMTI2OTIsImV4cCI6MTc0MTIxMzU5Mn0.Gu5qBouKANtdq6CedxkQbs_gfZxxJcey3DKXWelCkPNfrz3AWgrNTcmOn8kx70kmZa3BKHN-SgZ5SEmmz8je2NQj_9PA4HKc-IRwnJMHugUuHMTvvVKvUsrjozFlTGyqdJ1PbWAKPBA8zInwCJOCJfpIgrvY88R-8E66p1JwwFOxDrQOk0RizQPNqYP3BX7yj1GDH19MhsaQ0RV7Ka0jboWistYfQ8p5JBkbGkBq3U50m9pDn4L8ssL1vDA4QeOV2sD_29px0ATjLp8DsAKJrVLrxoooKRqPKKqn5GVcayj8jvYzwXyIPK-DR5yOPtH0_1_sm-IWKHH4m1LvcAgPmw";
+        "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ0ZXN0ZUBnbWFpbC5jb20iLCJpYXQiOjE3NDEzOTA0MjksImV4cCI6MTc0MTM5MTMyOX0.MBHS1UcNpMXPu4iZkSvuKUZP7B-FrnKzXRwMurkN5-ubQS2AwvbjfSG_w8YAojfvRpGSL0Iusro0jQ7gsfcRh7baNZHggT-0ZVCNJwkZ6w1BjdLXnuYVIPAZF7nBevfGgZFuMluZCUfCXxGL5B_T7fO3XhOAykBlOem3auJmzg9Ofyn2fuJDBJI-rfmixpVZAHNqV7NtgTP-U_upM4tjQJpLdMN7vhtrvB1V4ybHdcE9HV1RyEwGgNHzbVl02udts9Kj4WrABks03Ge6EQKdedkuLbM3W1G8du7athbDuo6Ehrr_JRUwDBG7z9H_Ejq6Mfspbj3pmJv0gQ08C9ar-Q";
     const [openToast, setOpenToast] = useState(false);
     const [toastMessage, setToastMessage] = useState("");
     const [toastType, setToastType] = useState("error");
@@ -99,29 +98,90 @@ export default function RegisterForm() {
         }));
     };
 
+    const resetForm = () => {
+        setCommonData({
+            nome: "",
+            email: "",
+            documento: "",
+            data_nascimento: "",
+            senha: "",
+            role: "",
+            data_cadastro: dayjs().format("YYYY-MM-DD"),
+            imagem_perfil: null,
+            ativo: true,
+            endereco: {
+                rua: "",
+                bairro: "",
+                cep: "",
+                complemento: "",
+            },
+        });
+        setStudentData({
+            ...commonData,
+            profissao: "",
+            enfermidades: "",
+            plano: "",
+            altura: 0,
+            data_pagamento: "",
+            data_vencimento: "",
+            ultimo_exercicio: "",
+        });
+        setEmployeeData({
+            ...commonData,
+            carteira_trabalho: "",
+            salario: 0,
+        });
+        setCep("");
+        setResponseCep({
+            neighborhood: "",
+            street: "",
+            complement: "",
+        });
+        setUserType("");
+    };
+
     const handleRegisterUser = async () => {
         try {
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${authCode}`,
+                },
+            };
+
             if (userType === "aluno") {
                 const studentPayload = {
                     ...commonData,
                     ...studentData,
                     role: userType,
                 };
-                console.log("Dados do aluno:", studentPayload);
-                await api.post("/aluno", studentPayload, { headers: { Authorization: authCode } });
+                console.log("Config:", config);
+                console.log("Payload sendo enviado:", studentPayload);
+
+                const response = await api.post("/aluno", studentPayload, config);
+                resetForm();
+                console.log("Resposta:", response);
             } else {
                 const employeePayload = {
                     ...commonData,
                     ...employeeData,
                     role: userType,
                 };
-                console.log("Dados do funcionário:", employeePayload);
-                await api.post("/funcionario", employeePayload, { headers: { Authorization: authCode } });
+                console.log("Config:", config);
+                console.log("Payload sendo enviado:", employeePayload);
+
+                const response = await api.post("/funcionario", employeePayload, config);
+                resetForm();
+                console.log("Resposta:", response);
             }
-        } catch (error) {
-            console.error("Erro ao registrar o usuário:", error);
             setOpenToast(true);
-            setToastMessage("Erro ao registrar o usuário: " + error.message);
+            setToastMessage(`${userType} cadastrado com sucesso!`);
+            setToastType("success");
+        } catch (error) {
+            console.error("Erro completo:", error);
+            console.error("Config da requisição:", error.config);
+            console.error("Headers enviados:", error.config?.headers);
+            setOpenToast(true);
+            setToastMessage("Erro ao registrar o usuário: " + (error.response?.data?.message || error.message));
             setToastType("error");
         }
     };
@@ -165,9 +225,6 @@ export default function RegisterForm() {
 
     return (
         <Box className="flex flex-col items-center justify-center bg-secondary  h-dvh w-full p-3 gap-9 md:p-8 ">
-            {openToast && (
-                <Toast message={toastMessage} type={toastType} open={openToast} onClose={() => setOpenToast(false)} />
-            )}
             <Box
                 component="form"
                 flexGrow={1}
@@ -412,7 +469,14 @@ export default function RegisterForm() {
                         </Box>
                     </div>
                 )}
-
+                {openToast && (
+                    <Toast
+                        message={toastMessage}
+                        type={toastType}
+                        open={openToast}
+                        onClose={() => setOpenToast(false)}
+                    />
+                )}
                 <Box className="flex flex-col gap-4 justify-center items-center">
                     <Button className="!bg-secondary !mt-4 w-[30%]" variant="contained" onClick={handleRegisterUser}>
                         {/* {userType === "Aluno" ? <Link to="measurement">Avançar</Link> : "Avançar"} */}
