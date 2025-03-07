@@ -11,7 +11,7 @@ export default function PageError() {
             <img src={PageNotFound} className="w-64 md:w-1/2" alt="Página não encontrada" />
 
             <Button variant="outlined" className="!text-secondary !border-secondary">
-                <Link to={isAuthenticated ? "/dashboard" : "/login"}>Retornar a página inicial</Link>
+                <Link to={isAuthenticated ? "/dashboard" : "/auth/login"}>Retornar a página inicial</Link>
             </Button>
         </Box>
     );

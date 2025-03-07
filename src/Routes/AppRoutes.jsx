@@ -18,7 +18,7 @@ export default function AppRoutes() {
     useEffect(() => {
         console.log("isAuthenticated", isAuthenticated);
         if (!isAuthenticated) {
-            navigate("/login");
+            navigate("/auth/login");
         }
     }, [isAuthenticated]);
 
