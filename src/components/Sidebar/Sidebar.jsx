@@ -35,7 +35,7 @@ const NAVIGATION = [
         segment: "lista-usuarios",
         title: "Lista de Usuários",
         icon: <MdPersonPin className="text-secondary text-xl" />,
-        route: "/user-list",
+        route: "/employee-list",
     },
     {
         segment: "studentlist",
