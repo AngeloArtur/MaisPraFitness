@@ -11,6 +11,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import InputLabel from "@mui/material/InputLabel";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Toast from "../../components/Toast/Toast";
+import api from "../../Apis/backend/MaisPraTiBack";
 
 import { MdOutlineVisibility, MdOutlineVisibilityOff, MdOutlineAccountCircle } from "react-icons/md";
 
@@ -21,6 +22,7 @@ export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [message, setMessage] = useState("");
     const [showError, setShowError] = useState(false);
     const [openToast, setOpenToast] = useState(false);
     const navigate = useNavigate();
@@ -28,13 +30,34 @@ export default function Login() {
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-    const CheckCredentials = () => {
+    const CheckCredentials = async () => {
         if (email && password) {
-            login();
-            navigate("/dashboard");
+            try {
+                const response = await api.post("auth/login", { email: email, senha: password });
+                const { accessToken, refreshToken } = response.data;
+
+                localStorage.setItem("accessToken", accessToken);
+                localStorage.setItem("refreshToken", refreshToken);
+                navigate("/dashboard");
+                login();
+            } catch (error) {
+                console.error("Erro ao fazer login:", error);
+
+                // Verificar se o backend retornou uma mensagem de erro
+                if (error.response && error.response.status === 500) {
+                    const errorMessage = error.response.data || "Erro desconhecido";
+                    setMessage(errorMessage); // Atualiza a mensagem com o erro vindo do backend
+                } else {
+                    setMessage("Erro de rede ou servidor não disponível");
+                }
+
+                setShowError(true); // Define que houve um erro para aplicar ao formulário
+                setOpenToast(true); // Abre o Toast
+            }
         } else {
             setShowError((show) => !show);
             setOpenToast(true);
+            setMessage("Por favor, preencha todos os campos");
         }
     };
 
@@ -98,12 +121,7 @@ export default function Login() {
                     </form>
 
                     {showError && (
-                        <Toast
-                            open={openToast}
-                            message="Email ou senha incorretos"
-                            type="error"
-                            onClose={() => setOpenToast(false)}
-                        />
+                        <Toast open={openToast} message={message} type="error" onClose={() => setOpenToast(false)} />
                     )}
 
                     <Link className="flex justify-center cursor-pointer mt-6 text-xs underline" to="/forgot-password">
