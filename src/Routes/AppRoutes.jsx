@@ -27,7 +27,7 @@ export default function AppRoutes() {
             <Route path="/" element={isAuthenticated ? <Home /> : <Navigate to="/login" />} />
             <Route path="/dashboard" element={<AlunoDashboard />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/user-list" element={<ListaUsuarios />} />
+            <Route path="/employee-list" element={<ListaUsuarios />} />
             <Route path="student-list">
                 <Route index element={<StudentList />} />
                 <Route path=":measurement" element={<Measurement />} />
