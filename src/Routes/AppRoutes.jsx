@@ -36,7 +36,7 @@ export default function AppRoutes() {
             <Route path="/users-management" element={<UsersManagement />} />
             <Route path="/register-form">
                 <Route index element={<RegisterForm />} />
-                <Route path=":measurement" element={<Measurement />} />
+                <Route path=":measurement/:alunoId" element={<Measurement />} />
             </Route>
         </Routes>
     );

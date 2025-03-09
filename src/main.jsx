@@ -7,7 +7,6 @@ import { useTheme } from "@mui/material/styles";
 import { AuthProvider } from "./context/AuthContext";
 import Routes from "./Routes/index.jsx";
 import { useAuth } from "./context/AuthContext.jsx";
-import RegisterForm from "./pages/Register-Form/RegisterForm.jsx";
 
 const closedWidth = (theme) => `calc(${theme.spacing(7)} + 1px)`;
 

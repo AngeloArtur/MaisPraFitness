@@ -11,8 +11,7 @@ import {
 } from "@mui/material";
 import { ApiCep } from "../../Apis/ViaCep";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { useNavigate } from "react-router-dom";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -25,8 +24,8 @@ const formatForDatabase = (date) => {
 };
 
 export default function RegisterForm() {
-    const authCode =
-        "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ0ZXN0ZUBnbWFpbC5jb20iLCJpYXQiOjE3NDEzOTA0MjksImV4cCI6MTc0MTM5MTMyOX0.MBHS1UcNpMXPu4iZkSvuKUZP7B-FrnKzXRwMurkN5-ubQS2AwvbjfSG_w8YAojfvRpGSL0Iusro0jQ7gsfcRh7baNZHggT-0ZVCNJwkZ6w1BjdLXnuYVIPAZF7nBevfGgZFuMluZCUfCXxGL5B_T7fO3XhOAykBlOem3auJmzg9Ofyn2fuJDBJI-rfmixpVZAHNqV7NtgTP-U_upM4tjQJpLdMN7vhtrvB1V4ybHdcE9HV1RyEwGgNHzbVl02udts9Kj4WrABks03Ge6EQKdedkuLbM3W1G8du7athbDuo6Ehrr_JRUwDBG7z9H_Ejq6Mfspbj3pmJv0gQ08C9ar-Q";
+    const navigate = useNavigate();
+    const authCode = localStorage.getItem("accessToken");
     const [openToast, setOpenToast] = useState(false);
     const [toastMessage, setToastMessage] = useState("");
     const [toastType, setToastType] = useState("error");
@@ -158,8 +157,9 @@ export default function RegisterForm() {
                 console.log("Payload sendo enviado:", studentPayload);
 
                 const response = await api.post("/aluno", studentPayload, config);
+                const alunoId = response.data.id_aluno;
                 resetForm();
-                console.log("Resposta:", response);
+                navigate(`/register-form/measurement/${alunoId}`);
             } else {
                 const employeePayload = {
                     ...commonData,
@@ -232,7 +232,7 @@ export default function RegisterForm() {
     };
 
     const handleNumberOnlyChange = (e, callback) => {
-        const value = e.target.value.replace(/\D/g, ''); // Remove qualquer caractere não numérico
+        const value = e.target.value.replace(/\D/g, ""); // Remove qualquer caractere não numérico
         e.target.value = value; // Atualiza o valor do input
         callback(value); // Chama a função de callback com o valor limpo
     };
@@ -283,7 +283,7 @@ export default function RegisterForm() {
                                 value={commonData.data_nascimento ? dayjs(commonData.data_nascimento) : null}
                                 onChange={(e) => handleDateChange(e)}
                                 format="DD/MM/YYYY"
-                                slotProps={{ textField: { size: 'medium' } }}
+                                slotProps={{ textField: { size: "medium" } }}
                             />
                         </LocalizationProvider>
                     </FormControl>
@@ -295,9 +295,9 @@ export default function RegisterForm() {
                             type="text"
                             label="CPF"
                             onKeyPress={handleNumberOnly}
-                            onChange={(e) => handleNumberOnlyChange(e, (value) => 
-                                setCommonData({ ...commonData, documento: value })
-                            )}
+                            onChange={(e) =>
+                                handleNumberOnlyChange(e, (value) => setCommonData({ ...commonData, documento: value }))
+                            }
                             inputProps={{ maxLength: 11 }}
                         />
                     </FormControl>
@@ -336,10 +336,12 @@ export default function RegisterForm() {
                             label="CEP"
                             value={cep}
                             onKeyPress={handleNumberOnly}
-                            onChange={(e) => handleNumberOnlyChange(e, (value) => {
-                                setCep(value);
-                                handleCepChange({ ...e, target: { ...e.target, value } });
-                            })}
+                            onChange={(e) =>
+                                handleNumberOnlyChange(e, (value) => {
+                                    setCep(value);
+                                    handleCepChange({ ...e, target: { ...e.target, value } });
+                                })
+                            }
                             inputProps={{ maxLength: 8 }}
                         />
                     </FormControl>
@@ -445,19 +447,19 @@ export default function RegisterForm() {
                         <Box className="flex flex-col w-full gap-3 lg:flex-row pt-6">
                             <FormControl variant="outlined" className="w-full lg:w-1/2">
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                    <DatePicker 
-                                        label="Data de pagamento" 
-                                        className="bg-white-100 w-full" 
-                                        slotProps={{ textField: { size: 'medium' } }}
+                                    <DatePicker
+                                        label="Data de pagamento"
+                                        className="bg-white-100 w-full"
+                                        slotProps={{ textField: { size: "medium" } }}
                                     />
                                 </LocalizationProvider>
                             </FormControl>
                             <FormControl variant="outlined" className="w-full lg:w-1/2">
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                    <DatePicker 
-                                        label="Data de vencimento" 
-                                        className="bg-white-100 w-full" 
-                                        slotProps={{ textField: { size: 'medium' } }}
+                                    <DatePicker
+                                        label="Data de vencimento"
+                                        className="bg-white-100 w-full"
+                                        slotProps={{ textField: { size: "medium" } }}
                                     />
                                 </LocalizationProvider>
                             </FormControl>
@@ -490,13 +492,15 @@ export default function RegisterForm() {
                                     type="text"
                                     label="Salário"
                                     onKeyPress={handleNumberOnly}
-                                    onChange={(e) => handleNumberOnlyChange(e, (value) => 
-                                        setEmployeeData({ ...employeeData, salario: Number(value) })
-                                    )}
+                                    onChange={(e) =>
+                                        handleNumberOnlyChange(e, (value) =>
+                                            setEmployeeData({ ...employeeData, salario: Number(value) })
+                                        )
+                                    }
                                     onPaste={(e) => {
                                         e.preventDefault();
-                                        const text = e.clipboardData.getData('text');
-                                        const numericValue = text.replace(/\D/g, '');
+                                        const text = e.clipboardData.getData("text");
+                                        const numericValue = text.replace(/\D/g, "");
                                         setEmployeeData({ ...employeeData, salario: Number(numericValue) });
                                     }}
                                 />
@@ -514,7 +518,6 @@ export default function RegisterForm() {
                 )}
                 <Box className="flex flex-col gap-4 justify-center items-center">
                     <Button className="!bg-secondary !mt-4 w-[30%]" variant="contained" onClick={handleRegisterUser}>
-                        {/* {userType === "Aluno" ? <Link to="measurement">Avançar</Link> : "Avançar"} */}
                         Avançar
                     </Button>
                 </Box>
