@@ -12,7 +12,7 @@ export default function AuthRoutes() {
 
     useEffect(() => {
         if (isAuthenticated) {
-            navigate("/login");
+            navigate("auth/login");
         }
     }, [isAuthenticated]);
 

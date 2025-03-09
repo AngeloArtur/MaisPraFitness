@@ -84,8 +84,7 @@ export default function Measurement() {
 
             const response = await api.post(`/medida/${id}`, formattedData, {
                 headers: {
-                    Authorization: `Bearer ${authToken}`,
-                    'Content-Type': 'application/json'
+                    Authorization: `Bearer ${authToken}`
                 },
             });
 
@@ -105,12 +104,8 @@ export default function Measurement() {
             
             let errorMessage = "Erro ao cadastrar medidas. Por favor, tente novamente.";
             
-            if (error.response?.status === 403) {
-                errorMessage = "Você não tem permissão para realizar esta operação.";
-            } else if (error.response?.data?.message) {
+            if (error.response?.data?.message) {
                 errorMessage = error.response.data.message;
-            } else if (error.response?.data?.error) {
-                errorMessage = error.response.data.error;
             }
             
             setToastMessage(errorMessage);
