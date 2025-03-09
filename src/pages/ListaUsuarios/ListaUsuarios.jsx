@@ -1,57 +1,68 @@
-import React, { useState } from "react";
-import { Box, Button, Card, CardContent, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Box, Button, Paper, Typography } from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
+import api from "../../Apis/backend/MaisPraTiBack";
+
+const columns = [
+    { field: "employeeName", headerName: "Nome do Funcionário", width: 350 },
+    { field: "cpf", headerName: "CPF", width: 150 },
+    { field: "active", headerName: "Ativos" },
+    {
+        field: "data",
+        headerName: "",
+        width: 350,
+        renderCell: () => (
+            <>
+                <Button variant="contained" className="!bg-danger text-white !font-bold">
+                    Inativar
+                </Button>
+            </>
+        ),
+    },
+];
 
 const ListaUsuarios = () => {
-  const [usuarios, setUsuarios] = useState([
-    "Usuário 1",
-    "Usuário 2",
-    "Usuário 3",
-  ]);
+    const [employees, setEmployees] = useState([]);
+    const authCode = localStorage.getItem("accessToken");
+    const config = {
+        headers: {
+            Authorization: `Bearer ${authCode}`,
+        },
+    };
 
-  const handleDelete = (index) => {
-    const novaLista = usuarios.filter((_, i) => i !== index);
-    setUsuarios(novaLista);
-  };
+    useEffect(() => {
+        api.get("/funcionario", config).then((response) => {
+            console.log(response.data);
+            setEmployees(response.data);
+        });
+    }, []);
 
-  return (
-    <Box flexGrow={1} bgcolor="#E3F2FD" className="h-dvh w-full px-2 md:px-7">
-      <div style={{ flex: 1, padding: "20px", textAlign: "center" }}>
-        <Typography variant="h4" gutterBottom>
-          Lista de Usuários
-        </Typography>
-        <Box bgcolor="#fff" borderRadius={2} className="p-4 w-full min-h-96 mr-5">
-          <CardContent>
-            {usuarios.length > 0 ? (
-              usuarios.map((usuario, index) => (
-                <div
-                  key={index}
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: "10px",
-                  }}
-                >
-                  <Typography>{usuario}</Typography>
-                  <Button
-                    variant="contained"
-                    style={{ backgroundColor: "secondary", color: "#ffffff" }}
-                    onClick={() => handleDelete(index)}
-                  >
-                    Deletar
-                  </Button>
-                </div>
-              ))
-            ) : (
-              <Typography color="textSecondary">
-                Nenhum usuário cadastrado
-              </Typography>
-            )}
-          </CardContent>
+    const allEmployees = employees.map((funcionario) => {
+        return {
+            id: funcionario.documento,
+            employeeName: funcionario.nome,
+            cpf: funcionario.documento,
+            active: funcionario.ativo,
+        };
+    });
+
+    return (
+        <Box className="flex flex-col items-center bg-secondary justify-center h-dvh w-full p-3 gap-9 md:p-8 ">
+            <Box bgcolor="#BBDEFB" borderRadius={2} className="p-4 h-full mr-5">
+                <Typography variant="h4" gutterBottom>
+                    Lista de Funcionários
+                </Typography>
+                <Paper className="min-h-80 h-4/5 w-72 md:w-full">
+                    <DataGrid
+                        rows={allEmployees}
+                        columns={columns}
+                        pageSizeOptions={false}
+                        disableRowSelectionOnClick
+                    />
+                </Paper>
+            </Box>
         </Box>
-      </div>
-    </Box>
-  );
+    );
 };
 
 export default ListaUsuarios;
