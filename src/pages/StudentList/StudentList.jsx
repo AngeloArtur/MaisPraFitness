@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
     Box,
     Typography,
@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
+import api from "../../Apis/backend/MaisPraTiBack";
 
 // Tema do campo de texto
 const customTheme = (outerTheme) =>
@@ -53,9 +54,8 @@ const customTheme = (outerTheme) =>
 //COLUNAS DA TABELA ALUNOS
 //As colunas informam quais informações dos alunos vão aparecer
 const columns = [
-    { field: "id", headerName: "ID" },
     { field: "studentName", headerName: "Nome do aluno", width: 350 },
-    { field: "cpf", headerName: "Matrícula" },
+    { field: "cpf", headerName: "CPF", width: 150 },
     { field: "active", headerName: "Ativos" },
     {
         field: "data",
@@ -76,106 +76,43 @@ const columns = [
 
 export default function StudentList() {
     const outerTheme = useTheme();
+    const [students, setStudents] = useState([]);
+    const authCode = localStorage.getItem("accessToken");
+    const config = {
+        headers: {
+            Authorization: `Bearer ${authCode}`,
+        },
+    };
 
-    //LINHAS DA TABELA DE ALUNOS
-    //Aqui é onde vai estar o ARRAY com os objetos alunos.
-    const alunos = [
-        {
-            id: 1,
-            studentName: "Paulo Diego",
-            cpf: "00000000001",
-            active: true,
-            data: "infos",
-        },
-        {
-            id: 2,
-            studentName: "Angelo Artur",
-            cpf: "00000000002",
-            active: false,
-            data: "infos",
-        },
-        {
-            id: 3,
-            studentName: "Guilherme Martins",
-            cpf: "00000000003",
-            active: true,
-            data: "infos",
-        },
-        {
-            id: 4,
-            studentName: "Arthur Morgan",
-            cpf: "00000000004",
-            active: false,
-            data: "infos",
-        },
-        {
-            id: 5,
-            studentName: "John Marston",
-            cpf: "00000000005",
-            active: true,
-            data: "infos",
-        },
-        {
-            id: 6,
-            studentName: "Jack Marston",
-            cpf: "00000000006",
-            active: true,
-            data: "infos",
-        },
-        {
-            id: 7,
-            studentName: "Dutch Vanderlinde",
-            cpf: "00000000007",
-            active: false,
-            data: "infos",
-        },
-        {
-            id: 8,
-            studentName: "Mary Linton",
-            cpf: "00000000008",
-            active: false,
-            data: "infos",
-        },
-        {
-            id: 9,
-            studentName: "Hosea Matthews",
-            cpf: "00000000009",
-            active: true,
-            data: "infos",
-        },
-        {
-            id: 10,
-            studentName: "Abigail Roberts",
-            cpf: "00000000010",
-            active: false,
-            data: "infos",
-        },
-        {
-            id: 11,
-            studentName: "Sadie Adler",
-            cpf: "00000000011",
-            active: true,
-            data: "infos",
-        },
-        {
-            id: 12,
-            studentName: "Charles Smith",
-            cpf: "00000000012",
-            active: true,
-            data: "infos",
-        },
-    ];
+    useEffect(() => {
+        api.get("/aluno", config).then((response) => {
+            console.log(response.data);
+            setStudents(response.data);
+        });
+    }, []);
+
+    const allStudents = students.map((aluno) => {
+        return {
+            id: aluno.documento,
+            studentName: aluno.nome,
+            cpf: aluno.documento,
+            active: aluno.ativo,
+        };
+    });
 
     // Variável com um FILTER para mostrar apenas os alunos ativos.
-    const AlunosAtivos = alunos.filter((aluno) => {
-        return aluno.active === true;
+    const AlunosAtivos = allStudents.filter((student) => {
+        return student.active == true;
     });
 
     // UseState para filtrar por nome no campo de texto
     const [pesquisarAluno, setPesquisarAluno] = useState("");
 
     const filtroPesquisarAlunos = AlunosAtivos.filter(
-        (aluno) => pesquisarAluno === "" || aluno.studentName.toLowerCase().includes(pesquisarAluno.toLowerCase())
+        (aluno) =>
+            pesquisarAluno == "" ||
+            aluno.studentName.toLowerCase().includes(pesquisarAluno.toLowerCase()) ||
+            aluno.cpf.toLowerCase().includes(pesquisarAluno.toLowerCase())
     );
 
     return (

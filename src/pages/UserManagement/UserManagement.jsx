@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     Box,
     Typography,
@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
+import api from "../../Apis/backend/MaisPraTiBack";
 
 // Tema do campo de texto
 const customTheme = (outerTheme) =>
@@ -54,7 +55,6 @@ const customTheme = (outerTheme) =>
 //COLUNAS DA TABELA ALUNOS
 //As colunas informam quais informações dos alunos vão aparecer
 const columns = [
-    { field: "id", headerName: "ID" },
     { field: "studentName", headerName: "Nome do aluno", width: 350 },
     { field: "cpf", headerName: "Matrícula", width: 200 },
     {
@@ -85,103 +85,39 @@ const columns = [
 
 export default function StudentList() {
     const outerTheme = useTheme();
+    const authCode = localStorage.getItem("accessToken");
+    const config = {
+        headers: {
+            Authorization: `Bearer ${authCode}`,
+        },
+    };
+    const [students, setStudents] = useState([]);
 
-    //LINHAS DA TABELA DE ALUNOS
-    //Aqui é onde vai estar o ARRAY com os objetos alunos.
-    const alunos = [
-        {
-            id: 1,
-            studentName: "Paulo Diego",
-            cpf: "00000000001",
-            active: true,
-            data: "infos",
-        },
-        {
-            id: 2,
-            studentName: "Angelo Artur",
-            cpf: "00000000002",
-            active: false,
-            data: "infos",
-        },
-        {
-            id: 3,
-            studentName: "Guilherme Martins",
-            cpf: "00000000003",
-            active: true,
-            data: "infos",
-        },
-        {
-            id: 4,
-            studentName: "Arthur Morgan",
-            cpf: "00000000004",
-            active: false,
-            data: "infos",
-        },
-        {
-            id: 5,
-            studentName: "John Marston",
-            cpf: "00000000005",
-            active: true,
-            data: "infos",
-        },
-        {
-            id: 6,
-            studentName: "Jack Marston",
-            cpf: "00000000006",
-            active: true,
-            data: "infos",
-        },
-        {
-            id: 7,
-            studentName: "Dutch Vanderlinde",
-            cpf: "00000000007",
-            active: false,
-            data: "infos",
-        },
-        {
-            id: 8,
-            studentName: "Mary Linton",
-            cpf: "00000000008",
-            active: false,
-            data: "infos",
-        },
-        {
-            id: 9,
-            studentName: "Hosea Matthews",
-            cpf: "00000000009",
-            active: true,
-            data: "infos",
-        },
-        {
-            id: 10,
-            studentName: "Abigail Roberts",
-            cpf: "00000000010",
-            active: false,
-            data: "infos",
-        },
-        {
-            id: 11,
-            studentName: "Sadie Adler",
-            cpf: "00000000011",
-            active: true,
-            data: "infos",
-        },
-        {
-            id: 12,
-            studentName: "Charles Smith",
-            cpf: "00000000012",
-            active: true,
-            data: "infos",
-        },
-    ];
+    useEffect(() => {
+        api.get("/aluno", config).then((response) => {
+            setStudents(response.data);
+        });
+    }, []);
+
+    const allStudents = students.map((aluno) => {
+        return {
+            id: aluno.documento,
+            studentName: aluno.nome,
+            cpf: aluno.documento,
+            active: aluno.ativo,
+        };
+    });
 
     // UseState para filtrar por nome no campo de texto
     const [pesquisarAluno, setPesquisarAluno] = useState("");
 
-    const filtroPesquisarAlunos = alunos.filter(
-        (aluno) => pesquisarAluno === "" || aluno.studentName.toLowerCase().includes(pesquisarAluno.toLowerCase())
+    const filtroPesquisarAlunos = allStudents.filter(
+        (aluno) =>
+            pesquisarAluno === "" ||
+            aluno.studentName.toLowerCase().includes(pesquisarAluno.toLowerCase()) ||
+            aluno.cpf.toLowerCase().includes(pesquisarAluno.toLowerCase())
     );
-
+    
     return (
         <Box className="flex flex-col items-center bg-secondary justify-center h-dvh w-full p-3 gap-9 md:p-8 ">
             <Box bgcolor="#BBDEFB" borderRadius={2} className="p-4 w=full h-full mr-5">
