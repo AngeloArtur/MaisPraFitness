@@ -61,13 +61,13 @@ const columns = [
         field: "data",
         headerName: "",
         width: 350,
-        renderCell: () => (
+        renderCell: (params) => (
             <>
                 <Button className="flex gap-5">
-                    <Link to="measurement">Medidas</Link>
+                    <Link to={`${params.row.id}/measurement`}>Medidas</Link>
                 </Button>
                 <Button className="flex gap-5">
-                    <Link to="edit-exercise">Editar treino</Link>
+                    <Link to={`${params.row.id}/edit-exercise`}>Editar treino</Link>
                 </Button>
             </>
         ),

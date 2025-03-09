@@ -30,8 +30,8 @@ export default function AppRoutes() {
             <Route path="/employee-list" element={<ListaUsuarios />} />
             <Route path="student-list">
                 <Route index element={<StudentList />} />
-                <Route path=":measurement" element={<Measurement />} />
-                <Route path=":edit-exercise" element={<ExerciseForm />}></Route>
+                <Route path=":id/measurement" element={<Measurement />} />
+                <Route path=":id/edit-exercise" element={<ExerciseForm />}></Route>
             </Route>
             <Route path="/users-management" element={<UsersManagement />} />
             <Route path="/register-form">
