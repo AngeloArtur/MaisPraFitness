@@ -223,6 +223,20 @@ export default function RegisterForm() {
         }
     };
 
+    const handleNumberOnly = (e) => {
+        // Previne caracteres não numéricos no keyPress
+        if (!/^\d*$/.test(e.key)) {
+            e.preventDefault();
+            return false;
+        }
+    };
+
+    const handleNumberOnlyChange = (e, callback) => {
+        const value = e.target.value.replace(/\D/g, ''); // Remove qualquer caractere não numérico
+        e.target.value = value; // Atualiza o valor do input
+        callback(value); // Chama a função de callback com o valor limpo
+    };
+
     return (
         <Box className="flex flex-col items-center justify-center bg-secondary  h-dvh w-full p-3 gap-9 md:p-8 ">
             <Box
@@ -261,27 +275,30 @@ export default function RegisterForm() {
                         />
                     </FormControl>
                     <FormControl className="w-full">
-                        <LocalizationProvider dateAdapter={AdapterDayjs} className="!pb-8">
-                            <DemoContainer components={["DatePicker"]} className="!mt-0">
-                                <DatePicker
-                                    maxDate={dayjs()}
-                                    label="Data de nascimento"
-                                    className="bg-white-100"
-                                    value={commonData.data_nascimento ? dayjs(commonData.data_nascimento) : null}
-                                    onChange={(e) => handleDateChange(e)}
-                                    format="DD/MM/YYYY"
-                                />
-                            </DemoContainer>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DatePicker
+                                maxDate={dayjs()}
+                                label="Data de nascimento"
+                                className="bg-white-100 w-full"
+                                value={commonData.data_nascimento ? dayjs(commonData.data_nascimento) : null}
+                                onChange={(e) => handleDateChange(e)}
+                                format="DD/MM/YYYY"
+                                slotProps={{ textField: { size: 'medium' } }}
+                            />
                         </LocalizationProvider>
                     </FormControl>
-                    <FormControl variant="outlined" className="w-full pt-4 mb-0">
+                    <FormControl variant="outlined" className="w-full">
                         <InputLabel htmlFor="outlined-adornment-CPF">CPF</InputLabel>
                         <OutlinedInput
                             className="bg-white-100"
                             id="outlined-adornment-CPF"
                             type="text"
                             label="CPF"
-                            onChange={(e) => setCommonData({ ...commonData, documento: e.target.value })}
+                            onKeyPress={handleNumberOnly}
+                            onChange={(e) => handleNumberOnlyChange(e, (value) => 
+                                setCommonData({ ...commonData, documento: value })
+                            )}
+                            inputProps={{ maxLength: 11 }}
                         />
                     </FormControl>
                 </Box>
@@ -318,7 +335,12 @@ export default function RegisterForm() {
                             type="text"
                             label="CEP"
                             value={cep}
-                            onChange={handleCepChange}
+                            onKeyPress={handleNumberOnly}
+                            onChange={(e) => handleNumberOnlyChange(e, (value) => {
+                                setCep(value);
+                                handleCepChange({ ...e, target: { ...e.target, value } });
+                            })}
+                            inputProps={{ maxLength: 8 }}
                         />
                     </FormControl>
                     <FormControl variant="outlined" className="w-full">
@@ -421,18 +443,22 @@ export default function RegisterForm() {
                         </Box>
 
                         <Box className="flex flex-col w-full gap-3 lg:flex-row pt-6">
-                            <FormControl variant="outlined" className="w-full">
-                                <LocalizationProvider dateAdapter={AdapterDayjs} className="!pb-8">
-                                    <DemoContainer components={["DatePicker"]}>
-                                        <DatePicker label="Data de pagamento" className="bg-white-100 !pt-0" />
-                                    </DemoContainer>
+                            <FormControl variant="outlined" className="w-full lg:w-1/2">
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <DatePicker 
+                                        label="Data de pagamento" 
+                                        className="bg-white-100 w-full" 
+                                        slotProps={{ textField: { size: 'medium' } }}
+                                    />
                                 </LocalizationProvider>
                             </FormControl>
-                            <FormControl variant="outlined" className="w-full">
-                                <LocalizationProvider dateAdapter={AdapterDayjs} className="!pb-8">
-                                    <DemoContainer components={["DatePicker"]}>
-                                        <DatePicker label="Data de vencimento" className="bg-white-100 !pt-0" />
-                                    </DemoContainer>
+                            <FormControl variant="outlined" className="w-full lg:w-1/2">
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <DatePicker 
+                                        label="Data de vencimento" 
+                                        className="bg-white-100 w-full" 
+                                        slotProps={{ textField: { size: 'medium' } }}
+                                    />
                                 </LocalizationProvider>
                             </FormControl>
                         </Box>
@@ -461,9 +487,18 @@ export default function RegisterForm() {
                                 <OutlinedInput
                                     className="bg-white-100"
                                     id="outlined-adornment-salario"
-                                    type="number"
+                                    type="text"
                                     label="Salário"
-                                    onChange={(e) => setEmployeeData({ ...employeeData, salario: e.target.value })}
+                                    onKeyPress={handleNumberOnly}
+                                    onChange={(e) => handleNumberOnlyChange(e, (value) => 
+                                        setEmployeeData({ ...employeeData, salario: Number(value) })
+                                    )}
+                                    onPaste={(e) => {
+                                        e.preventDefault();
+                                        const text = e.clipboardData.getData('text');
+                                        const numericValue = text.replace(/\D/g, '');
+                                        setEmployeeData({ ...employeeData, salario: Number(numericValue) });
+                                    }}
                                 />
                             </FormControl>
                         </Box>
