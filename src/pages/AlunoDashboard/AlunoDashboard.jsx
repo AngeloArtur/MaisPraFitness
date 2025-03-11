@@ -27,7 +27,6 @@ const AlunoDashboard = () => {
     });
 
     const columns = [
-        { field: "id", headerName: "ID" },
         { field: "exerciseName", headerName: "Exercício", width: 350 },
         { field: "series", headerName: "Séries" },
         { field: "repetitions", headerName: "Repetições" },
