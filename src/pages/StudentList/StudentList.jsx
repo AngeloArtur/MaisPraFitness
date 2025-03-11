@@ -87,13 +87,14 @@ export default function StudentList() {
     useEffect(() => {
         api.get("/aluno", config).then((response) => {
             console.log(response.data);
+            console.log(response.data.id_aluno);
             setStudents(response.data);
         });
     }, []);
 
     const allStudents = students.map((aluno) => {
         return {
-            id: aluno.documento,
+            id: aluno.id_aluno,
             studentName: aluno.nome,
             cpf: aluno.documento,
             active: aluno.ativo,
