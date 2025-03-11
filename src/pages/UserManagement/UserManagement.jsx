@@ -54,7 +54,7 @@ const customTheme = (outerTheme) =>
 //COLUNAS DA TABELA ALUNOS
 //As colunas informam quais informações dos alunos vão aparecer
 
-export default function StudentList() {
+export default function UsersManagement() {
     const outerTheme = useTheme();
     const authCode = localStorage.getItem("accessToken");
     const config = {
