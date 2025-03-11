@@ -20,6 +20,7 @@ export default {
                 black: "#000000",
                 error: "#D32F2F",
                 danger: "#F03000",
+                success: "#25842d",
             },
         },
     },
