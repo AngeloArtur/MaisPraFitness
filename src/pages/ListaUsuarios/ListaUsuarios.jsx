@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Card, CardContent, Typography } from "@mui/material";
+import { Box, Button, Card, CardContent, Typography } from "@mui/material";
 
 const ListaUsuarios = () => {
   const [usuarios, setUsuarios] = useState([
@@ -14,22 +14,12 @@ const ListaUsuarios = () => {
   };
 
   return (
-    <div style={{ display: "flex" }}>
+    <Box flexGrow={1} bgcolor="#E3F2FD" className="h-dvh w-full px-2 md:px-7">
       <div style={{ flex: 1, padding: "20px", textAlign: "center" }}>
         <Typography variant="h4" gutterBottom>
           Lista de Usuários
         </Typography>
-        <Card
-          style={{
-            width: "90vw",
-            height: "70vh",
-            margin: "5vh auto",
-            padding: "20px",
-            overflowY: "auto",
-            color: "#000000",
-            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-          }}
-        >
+        <Box bgcolor="#fff" borderRadius={2} className="p-4 w-full min-h-96 mr-5">
           <CardContent>
             {usuarios.length > 0 ? (
               usuarios.map((usuario, index) => (
@@ -58,9 +48,9 @@ const ListaUsuarios = () => {
               </Typography>
             )}
           </CardContent>
-        </Card>
+        </Box>
       </div>
-    </div>
+    </Box>
   );
 };
 

@@ -9,6 +9,7 @@ import {
     createTheme,
     ThemeProvider,
     useTheme,
+    Stack,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
@@ -55,21 +56,29 @@ const customTheme = (outerTheme) =>
 const columns = [
     { field: "id", headerName: "ID" },
     { field: "studentName", headerName: "Nome do aluno", width: 350 },
-    { field: "cpf", headerName: "Matrícula" },
-    { field: "active", headerName: "Ativos" },
+    { field: "cpf", headerName: "Matrícula", width: 200 },
     {
-        field: "data",
+        field: "active",
         headerName: "",
-        width: 350,
+        width: 100,
         renderCell: () => (
-            <>
-                <Button className="flex gap-5">
-                    <Link to="measurement">Medidas</Link>
+            <Stack direction="row" spacing={2}>
+                <Button variant="contained" color="success">
+                    <Link to="">ATIVAR</Link>
                 </Button>
-                <Button className="flex gap-5">
-                    <Link to="edit-exercise">Editar treino</Link>
+            </Stack>
+        ),
+    },
+    {
+        field: "inactive",
+        headerName: "",
+        width: 100,
+        renderCell: () => (
+            <Stack direction="row">
+                <Button variant="outlined" color="error">
+                    <Link to="">INATIVAR</Link>
                 </Button>
-            </>
+            </Stack>
         ),
     },
 ];
@@ -166,23 +175,18 @@ export default function StudentList() {
         },
     ];
 
-    // Variável com um FILTER para mostrar apenas os alunos ativos.
-    const AlunosAtivos = alunos.filter((aluno) => {
-        return aluno.active === true;
-    });
-
     // UseState para filtrar por nome no campo de texto
     const [pesquisarAluno, setPesquisarAluno] = useState("");
 
-    const filtroPesquisarAlunos = AlunosAtivos.filter(
+    const filtroPesquisarAlunos = alunos.filter(
         (aluno) => pesquisarAluno === "" || aluno.studentName.toLowerCase().includes(pesquisarAluno.toLowerCase())
     );
 
     return (
         <Box className="flex flex-col items-center bg-secondary justify-center h-dvh w-full p-3 gap-9 md:p-8 ">
-            <Box bgcolor="#BBDEFB" borderRadius={2} className="p-4 h-full mr-5">
+            <Box bgcolor="#BBDEFB" borderRadius={2} className="p-4 w=full h-full mr-5">
                 <Typography variant="h5" className="pt-4">
-                    Lista de alunos
+                    Gestão de usuários
                 </Typography>
                 <Box className="my-4">
                     <ThemeProvider theme={customTheme(outerTheme)}>
