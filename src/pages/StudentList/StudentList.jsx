@@ -54,20 +54,20 @@ const customTheme = (outerTheme) =>
 //COLUNAS DA TABELA ALUNOS
 //As colunas informam quais informações dos alunos vão aparecer
 const columns = [
-    { field: "studentName", headerName: "Nome do aluno", width: 350 },
-    { field: "cpf", headerName: "CPF", width: 150 },
-    { field: "active", headerName: "Ativos" },
+    { field: "studentName", headerName: "Nome do aluno", width: 300 },
+    { field: "cpf", headerName: "CPF", width: 200 },
+    { field: "register", headerName: "Cadastro", width: 150 },
     {
         field: "data",
         headerName: "",
-        width: 350,
-        renderCell: () => (
+        width: 250,
+        renderCell: (params) => (
             <>
                 <Button className="flex gap-5">
-                    <Link to="measurement">Medidas</Link>
+                    <Link to={`measurement/${params.row.id}`}>Medidas</Link>
                 </Button>
                 <Button className="flex gap-5">
-                    <Link to="edit-exercise">Editar treino</Link>
+                    <Link to={`edit-exercise/${params.row.id}`}>Editar treino</Link>
                 </Button>
             </>
         ),
@@ -97,6 +97,7 @@ export default function StudentList() {
             id: aluno.id_aluno,
             studentName: aluno.nome,
             cpf: aluno.documento,
+            register: aluno.data_cadastro.replace(/-/g, "/").split("/").reverse().join("/"),
             active: aluno.ativo,
         };
     });
