@@ -10,10 +10,12 @@ import {
     useTheme,
 } from "@mui/material/";
 import { useState } from "react";
+import api from "../../Apis/backend/MaisPraTiBack";
 
 export default function Profile() {
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+    const role = localStorage.getItem("userRole");
 
     const [values, setValues] = useState({
         CPFmask: "000.000.000-00",
