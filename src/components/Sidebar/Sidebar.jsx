@@ -4,27 +4,34 @@ import MuiDrawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import Tooltip from "@mui/material/Tooltip";
 
 import {
     MdMenuOpen,
     MdOutlineMenu,
     MdPersonPin,
     MdDashboard,
-    MdPerson ,
+    MdPerson,
     MdExitToApp,
     MdGroups,
     MdOutlinePersonAddAlt,
     MdManageAccounts,
+    MdMonitorWeight,
+    MdPeople,
+    MdBadge,
+    MdPayment,
+    MdAttachMoney,
 } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
 
-const NAVIGATION = [
+// Define as navegações por tipo de usuário
+const ADMIN_NAVIGATION = [
     {
         segment: "dashboard",
         title: "Dashboard",
@@ -58,11 +65,100 @@ const NAVIGATION = [
     {
         kind: "divider",
     },
-
     {
         segment: "reports",
         title: "Meu Perfil",
-        icon: <MdPerson  className="text-secondary text-xl" />,
+        icon: <MdPerson className="text-secondary text-xl" />,
+        route: "/profile",
+    },
+    {
+        segment: "exitapp",
+        title: "Exit App",
+        icon: <MdExitToApp className="text-secondary text-xl" />,
+        route: "/login",
+    },
+];
+
+const STUDENT_NAVIGATION = [
+    {
+        segment: "dashboard",
+        title: "Dashboard",
+        icon: <MdDashboard className="text-secondary text-xl" />,
+        route: "/dashboard",
+    },
+    {
+        kind: "divider",
+    },
+    {
+        segment: "reports",
+        title: "Meu Perfil",
+        icon: <MdPerson className="text-secondary text-xl" />,
+        route: "/profile",
+    },
+    {
+        segment: "exitapp",
+        title: "Exit App",
+        icon: <MdExitToApp className="text-secondary text-xl" />,
+        route: "/login",
+    },
+];
+
+const PROFESSOR_NAVIGATION = [
+    {
+        segment: "dashboard",
+        title: "Dashboard",
+        icon: <MdDashboard className="text-secondary text-xl" />,
+        route: "/dashboard",
+    },
+    {
+        segment: "studentlist",
+        title: "Lista alunos",
+        icon: <MdGroups className="text-secondary text-xl" />,
+        route: "/student-list",
+    },
+    {
+        kind: "divider",
+    },
+    {
+        segment: "reports",
+        title: "Meu Perfil",
+        icon: <MdPerson className="text-secondary text-xl" />,
+        route: "/profile",
+    },
+    {
+        segment: "exitapp",
+        title: "Exit App",
+        icon: <MdExitToApp className="text-secondary text-xl" />,
+        route: "/login",
+    },
+];
+
+const RECEPCIONISTA_NAVIGATION = [
+    {
+        segment: "dashboard",
+        title: "Dashboard",
+        icon: <MdDashboard className="text-secondary text-xl" />,
+        route: "/dashboard",
+    },
+    {
+        segment: "studentlist",
+        title: "Lista alunos",
+        icon: <MdGroups className="text-secondary text-xl" />,
+        route: "/student-list",
+    },
+    {
+        segment: "usersmanagement",
+        title: "Gestão de usuários",
+        icon: <MdManageAccounts className="text-secondary text-xl" />,
+        route: "/users-management",
+    },
+    {
+        kind: "divider",
+    },
+    {
+        segment: "reports",
+        title: "Meu Perfil",
+        icon: <MdPerson className="text-secondary text-xl" />,
         route: "/profile",
     },
     {
@@ -124,11 +220,69 @@ const Drawer = styled(MuiDrawer, {
 export default function Sidebar({ open, handleDrawerOpen }) {
     const navigate = useNavigate();
     const { logout } = useAuth();
+    const [userRole, setUserRole] = useState(null);
+    const [navigation, setNavigation] = useState([]);
+
+    const updateNavigation = () => {
+        const role = localStorage.getItem("userRole");
+        console.log("Papel do usuário na Sidebar:", role);
+        
+        if (!role) {
+            console.log("Nenhum papel encontrado, redirecionando para login");
+            localStorage.clear();
+            logout();
+            navigate("/login");
+            return;
+        }
+
+        // Define a navegação com base no papel do usuário
+        switch (role.toUpperCase()) {
+            case "ALUNO":
+                console.log("Definindo navegação do aluno");
+                setNavigation(STUDENT_NAVIGATION);
+                break;
+            case "PROFESSOR":
+                console.log("Definindo navegação do professor");
+                setNavigation(PROFESSOR_NAVIGATION);
+                break;
+            case "RECEPCIONISTA":
+                console.log("Definindo navegação do recepcionista");
+                setNavigation(RECEPCIONISTA_NAVIGATION);
+                break;
+            case "ADMIN":
+                console.log("Definindo navegação do administrador");
+                setNavigation(ADMIN_NAVIGATION);
+                break;
+            default:
+                console.log("Papel não reconhecido:", role);
+                localStorage.clear();
+                logout();
+                navigate("/login");
+                return;
+        }
+        
+        setUserRole(role.toUpperCase());
+    };
+
+    useEffect(() => {
+        // Atualiza a navegação quando o componente monta
+        updateNavigation();
+
+        // Adiciona listener para mudanças no localStorage
+        window.addEventListener('storage', updateNavigation);
+
+        // Cleanup
+        return () => {
+            window.removeEventListener('storage', updateNavigation);
+        };
+    }, []);
 
     const handleNavigation = (route, segment) => {
         if (segment === "exitapp") {
+            // Limpa todo o localStorage
+            localStorage.clear();
             logout();
-            navigate("login");
+            navigate("/login");
             return;
         }
         navigate(route);
@@ -155,7 +309,7 @@ export default function Sidebar({ open, handleDrawerOpen }) {
                 <Divider />
 
                 <List>
-                    {NAVIGATION.map((item, index) => {
+                    {navigation.map((item, index) => {
                         if (item.kind === "divider") {
                             return <Divider key={index} />;
                         }

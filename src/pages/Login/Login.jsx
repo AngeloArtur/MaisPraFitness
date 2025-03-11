@@ -34,25 +34,103 @@ export default function Login() {
         if (email && password) {
             try {
                 const response = await api.post("auth/login", { email: email, senha: password });
-                const { accessToken, refreshToken } = response.data;
+                console.log("Resposta completa do backend:", response.data);
 
+                // Extrai os dados da resposta
+                const { accessToken, refreshToken, tipoUsuario } = response.data;
+                console.log("Tipo de usuário recebido:", tipoUsuario);
+
+                if (!accessToken || !refreshToken) {
+                    console.error("Tokens não encontrados na resposta");
+                    setMessage("Erro na autenticação. Por favor, tente novamente.");
+                    setShowError(true);
+                    setOpenToast(true);
+                    return;
+                }
+
+                // Limpa o localStorage antes de salvar novos dados
+                localStorage.clear();
+
+                // Mapeia o tipo de usuário para o role
+                let role;
+                const tipoUsuarioNum = Number(tipoUsuario);
+                console.log("Tipo de usuário convertido para número:", tipoUsuarioNum);
+
+                switch (tipoUsuarioNum) {
+                    case 1:
+                        role = "ADMIN";
+                        console.log("Usuário identificado como ADMIN");
+                        break;
+                    case 2:
+                        role = "ALUNO";
+                        console.log("Usuário identificado como ALUNO");
+                        break;
+                    case 3:
+                        role = "PROFESSOR";
+                        console.log("Usuário identificado como PROFESSOR");
+                        break;
+                    case 4:
+                        role = "RECEPCIONISTA";
+                        console.log("Usuário identificado como RECEPCIONISTA");
+                        break;
+                    default:
+                        // Se não reconhecer o tipo, verifica o email como fallback
+                        if (email.includes("admin")) {
+                            role = "ADMIN";
+                            console.log("Definindo como ADMIN baseado no email");
+                        } else {
+                            role = "ALUNO";
+                            console.log("Definindo como ALUNO por padrão");
+                        }
+                }
+
+                console.log("Papel final definido:", role);
+
+                // Salva os dados na ordem correta
                 localStorage.setItem("accessToken", accessToken);
                 localStorage.setItem("refreshToken", refreshToken);
+                localStorage.setItem("userRole", role);
+
+                // Verifica se os dados foram salvos
+                const savedRole = localStorage.getItem("userRole");
+                console.log("Role salvo no localStorage:", savedRole);
+
+                // Primeiro faz login
+                await login();
+                
+                // Depois navega para o dashboard
                 navigate("/dashboard");
-                login();
             } catch (error) {
                 console.error("Erro ao fazer login:", error);
 
-                // Verificar se o backend retornou uma mensagem de erro
-                if (error.response && error.response.status === 500) {
-                    const errorMessage = error.response.data || "Erro desconhecido";
-                    setMessage(errorMessage); // Atualiza a mensagem com o erro vindo do backend
+                // Melhor tratamento de erro com mais detalhes
+                if (error.response) {
+                    // O servidor respondeu com um status de erro
+                    console.error("Detalhes do erro:", {
+                        status: error.response.status,
+                        data: error.response.data,
+                        headers: error.response.headers
+                    });
+                    
+                    if (error.response.status === 500) {
+                        setMessage("Erro interno do servidor. Por favor, tente novamente ou contate o suporte.");
+                    } else if (error.response.data && error.response.data.message) {
+                        setMessage(error.response.data.message);
+                    } else {
+                        setMessage("Erro ao fazer login. Verifique suas credenciais.");
+                    }
+                } else if (error.request) {
+                    // A requisição foi feita mas não houve resposta
+                    console.error("Sem resposta do servidor:", error.request);
+                    setMessage("Servidor não está respondendo. Verifique sua conexão.");
                 } else {
-                    setMessage("Erro de rede ou servidor não disponível");
+                    // Erro ao configurar a requisição
+                    console.error("Erro de configuração:", error.message);
+                    setMessage("Erro ao processar sua requisição. Tente novamente.");
                 }
 
-                setShowError(true); // Define que houve um erro para aplicar ao formulário
-                setOpenToast(true); // Abre o Toast
+                setShowError(true);
+                setOpenToast(true);
             }
         } else {
             setShowError((show) => !show);
