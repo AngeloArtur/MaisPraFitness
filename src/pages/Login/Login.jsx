@@ -36,12 +36,11 @@ export default function Login() {
                 const response = await api.post("auth/login", { email: email, senha: password });
                 console.log("Resposta completa do backend:", response.data);
 
-                // Extrai os dados da resposta
-                const { accessToken, refreshToken, tipoUsuario } = response.data;
-                console.log("Tipo de usuário recebido:", tipoUsuario);
+                const { accessToken, refreshToken, role } = response.data;
+                console.log("Role recebida:", role);
 
-                if (!accessToken || !refreshToken) {
-                    console.error("Tokens não encontrados na resposta");
+                if (!accessToken || !refreshToken || !role) {
+                    console.error("Dados de autenticação incompletos");
                     setMessage("Erro na autenticação. Por favor, tente novamente.");
                     setShowError(true);
                     setOpenToast(true);
@@ -51,53 +50,18 @@ export default function Login() {
                 // Limpa o localStorage antes de salvar novos dados
                 localStorage.clear();
 
-                // Mapeia o tipo de usuário para o role
-                let role;
-                const tipoUsuarioNum = Number(tipoUsuario);
-                console.log("Tipo de usuário convertido para número:", tipoUsuarioNum);
-
-                switch (tipoUsuarioNum) {
-                    case 1:
-                        role = "ADMIN";
-                        console.log("Usuário identificado como ADMIN");
-                        break;
-                    case 2:
-                        role = "ALUNO";
-                        console.log("Usuário identificado como ALUNO");
-                        break;
-                    case 3:
-                        role = "PROFESSOR";
-                        console.log("Usuário identificado como PROFESSOR");
-                        break;
-                    case 4:
-                        role = "RECEPCIONISTA";
-                        console.log("Usuário identificado como RECEPCIONISTA");
-                        break;
-                    default:
-                        // Se não reconhecer o tipo, verifica o email como fallback
-                        if (email.includes("admin")) {
-                            role = "ADMIN";
-                            console.log("Definindo como ADMIN baseado no email");
-                        } else {
-                            role = "ALUNO";
-                            console.log("Definindo como ALUNO por padrão");
-                        }
-                }
-
-                console.log("Papel final definido:", role);
-
-                // Salva os dados na ordem correta
+                // Salva os dados
                 localStorage.setItem("accessToken", accessToken);
                 localStorage.setItem("refreshToken", refreshToken);
                 localStorage.setItem("userRole", role);
 
                 // Verifica se os dados foram salvos
                 const savedRole = localStorage.getItem("userRole");
-                console.log("Role salvo no localStorage:", savedRole);
+                console.log("Role salva no localStorage:", savedRole);
 
                 // Primeiro faz login
                 await login();
-                
+
                 // Depois navega para o dashboard
                 navigate("/dashboard");
             } catch (error) {
@@ -109,9 +73,9 @@ export default function Login() {
                     console.error("Detalhes do erro:", {
                         status: error.response.status,
                         data: error.response.data,
-                        headers: error.response.headers
+                        headers: error.response.headers,
                     });
-                    
+
                     if (error.response.status === 500) {
                         setMessage("Erro interno do servidor. Por favor, tente novamente ou contate o suporte.");
                     } else if (error.response.data && error.response.data.message) {

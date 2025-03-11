@@ -11,7 +11,6 @@ import ListItemText from "@mui/material/ListItemText";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import Tooltip from "@mui/material/Tooltip";
 
 import {
     MdMenuOpen,
@@ -23,11 +22,6 @@ import {
     MdGroups,
     MdOutlinePersonAddAlt,
     MdManageAccounts,
-    MdMonitorWeight,
-    MdPeople,
-    MdBadge,
-    MdPayment,
-    MdAttachMoney,
 } from "react-icons/md";
 
 // Define as navegações por tipo de usuário
@@ -58,7 +52,7 @@ const ADMIN_NAVIGATION = [
     },
     {
         segment: "Create",
-        title: "Create",
+        title: "Registrar Usuário",
         icon: <MdOutlinePersonAddAlt className="text-secondary text-xl" />,
         route: "/register-form",
     },
@@ -135,12 +129,6 @@ const PROFESSOR_NAVIGATION = [
 
 const RECEPCIONISTA_NAVIGATION = [
     {
-        segment: "dashboard",
-        title: "Dashboard",
-        icon: <MdDashboard className="text-secondary text-xl" />,
-        route: "/dashboard",
-    },
-    {
         segment: "studentlist",
         title: "Lista alunos",
         icon: <MdGroups className="text-secondary text-xl" />,
@@ -151,6 +139,12 @@ const RECEPCIONISTA_NAVIGATION = [
         title: "Gestão de usuários",
         icon: <MdManageAccounts className="text-secondary text-xl" />,
         route: "/users-management",
+    },
+    {
+        segment: "Create",
+        title: "Registrar Usuário",
+        icon: <MdOutlinePersonAddAlt className="text-secondary text-xl" />,
+        route: "/register-form",
     },
     {
         kind: "divider",
@@ -225,18 +219,18 @@ export default function Sidebar({ open, handleDrawerOpen }) {
 
     const updateNavigation = () => {
         const role = localStorage.getItem("userRole");
-        console.log("Papel do usuário na Sidebar:", role);
-        
+        console.log("Role do usuário na Sidebar:", role);
+
         if (!role) {
-            console.log("Nenhum papel encontrado, redirecionando para login");
+            console.log("Nenhuma role encontrada, redirecionando para login");
             localStorage.clear();
             logout();
             navigate("/login");
             return;
         }
 
-        // Define a navegação com base no papel do usuário
-        switch (role.toUpperCase()) {
+        // Define a navegação com base na role do usuário
+        switch (role) {
             case "ALUNO":
                 console.log("Definindo navegação do aluno");
                 setNavigation(STUDENT_NAVIGATION);
@@ -249,19 +243,19 @@ export default function Sidebar({ open, handleDrawerOpen }) {
                 console.log("Definindo navegação do recepcionista");
                 setNavigation(RECEPCIONISTA_NAVIGATION);
                 break;
-            case "ADMIN":
+            case "ADMINISTRADOR":
                 console.log("Definindo navegação do administrador");
                 setNavigation(ADMIN_NAVIGATION);
                 break;
             default:
-                console.log("Papel não reconhecido:", role);
+                console.log("Role não reconhecida:", role);
                 localStorage.clear();
                 logout();
                 navigate("/login");
                 return;
         }
-        
-        setUserRole(role.toUpperCase());
+
+        setUserRole(role);
     };
 
     useEffect(() => {
@@ -269,11 +263,11 @@ export default function Sidebar({ open, handleDrawerOpen }) {
         updateNavigation();
 
         // Adiciona listener para mudanças no localStorage
-        window.addEventListener('storage', updateNavigation);
+        window.addEventListener("storage", updateNavigation);
 
         // Cleanup
         return () => {
-            window.removeEventListener('storage', updateNavigation);
+            window.removeEventListener("storage", updateNavigation);
         };
     }, []);
 
