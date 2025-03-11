@@ -140,6 +140,8 @@ export default function StudentList() {
                         columns={columns}
                         pageSizeOptions={false}
                         disableRowSelectionOnClick
+                        disableColumnMenu
+                        disableColumnFilter
                     />
                 </Paper>
             </Box>
